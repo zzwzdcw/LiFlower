@@ -20,24 +20,24 @@
               <div class="type-selector">
                 <div
                   class="type-btn"
-                  :class="{ active: 角色.类型 === 'human' }"
-                  @click="onTypeChange('human')"
+                  :class="{ active: 角色.类型 === 'Anthropos' }"
+                  @click="onTypeChange('Anthropos')"
                 >
                   <el-icon size="36"><User /></el-icon>
-                  <span>人类</span>
+                  <span>人类/Anthropos</span>
                 </div>
                 <div
                   class="type-btn"
-                  :class="{ active: 角色.类型 === 'android' }"
-                  @click="onTypeChange('android')"
+                  :class="{ active: 角色.类型 === 'Anthroform' }"
+                  @click="onTypeChange('Anthroform')"
                 >
                   <el-icon size="36"><Avatar /></el-icon>
-                  <span>人形</span>
+                  <span>人形/Anthroform</span>
                 </div>
               </div>
             </el-form-item>
 
-            <el-form-item v-if="角色.类型 === 'android'" label="硬件规格" required>
+            <el-form-item v-if="角色.类型 === 'Anthroform'" label="硬件规格" required>
               <el-select
                 v-model="角色.硬件规格"
                 placeholder="请选择硬件规格"
@@ -101,13 +101,15 @@ const 角色 = reactive({
   类型: "",
   硬件规格: "",
   起源: "",
+  属性点: "",
+  分配属性点上限: 5,
 });
 
 const 硬件规格列表 = 硬件规格数据;
 
 const onTypeChange = (type) => {
   角色.类型 = type;
-  if (type === "human") {
+  if (type === "Anthropos") {
     角色.硬件规格 = "";
   }
 };
