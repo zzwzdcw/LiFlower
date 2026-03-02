@@ -1,0 +1,198 @@
+[
+    {
+        "id": "meaningless_generation",
+        "name": "无意义一代",
+        "name_en": "Meaningless Generation",
+        "attribute_bonus": {
+            "stat": "variable",
+            "value": "+1"
+        },
+        "starting_resources": 15,
+        "description": "在全民基本收入(UBI)体制下长大，意识到生活的空虚，通过叛逆寻找个性。认为无意义的人生不如死去，不惜犯罪降低UBI等级也要追求刺激。",
+        "traits": [
+            "叛逆精神",
+            "虚无主义",
+            "渴望力量"
+        ],
+        "typical_motivation": "寻找存在的意义，哪怕摔得头破血流"
+    },
+    {
+        "id": "cog",
+        "name": "螺丝钉",
+        "name_en": "The Cog",
+        "attribute_bonus": {
+            "stat": "structure/power",
+            "value": "+1/+5"
+        },
+        "description": "忽然下定决心辞去工作，取出多年积蓄在黑市购买最好的人形零件。这是旧人生的结束，也是新人生的开始。",
+        "traits": [
+            "破釜沉舟",
+            "技术亲和",
+            "阶级跨越"
+        ],
+        "typical_motivation": "摆脱被异化的劳动，掌握自己的身体命运"
+    },
+    {
+        "id": "veteran",
+        "name": "老兵",
+        "name_en": "Veteran",
+        "attribute_bonus": {
+            "stat": "force/movement",
+            "value": "+2"
+        },
+        "description": "战争是谎言，是表演，是技术试验场。但对你来说战争是真实的。你曾参与2020-2038年的可持续战争，亲眼目睹了NAIO的觉醒。",
+        "traits": [
+            "战斗经验丰富",
+            "创伤后应激",
+            "实用主义"
+        ],
+        "typical_motivation": "在虚假和平中寻找真实，或逃避过去的幽灵"
+    },
+    {
+        "id": "corporate_bureaucrat",
+        "name": "公司官僚",
+        "name_en": "Corporate Bureaucrat",
+        "attribute_bonus": {
+            "stat": "class",
+            "value": "+2"
+        },
+        "description": "资本的主题是自控，官僚的主题是解放思想。你拥有执法权但没有意识形态包袱，在巨型企业的层级中如鱼得水。",
+        "traits": [
+            "法律 expertise",
+            "人脉网络",
+            "虚伪的解放"
+        ],
+        "typical_motivation": "在体制内部寻求自我实现，或利用系统漏洞"
+    },
+    {
+        "id": "warzone_scavenger",
+        "name": "战区拾荒者",
+        "name_en": "Warzone Scavenger",
+        "attribute_bonus": {
+            "stat": "information/engineering",
+            "value": "+2"
+        },
+        "description": "在NAIO崩溃后的无人区或废弃战场中求生，与蛰伏的战争机械和失控人形打交道。了解世界真相的残酷渠道。",
+        "traits": [
+            "生存专家",
+            "技术拾荒",
+            "危险直觉"
+        ],
+        "typical_motivation": "从废墟中挖掘价值，或揭开战争遗留的秘密"
+    },
+    {
+        "id": "old_net_believer",
+        "name": "旧网信徒",
+        "name_en": "Old Net Believer",
+        "attribute_bonus": {
+            "stat": "computing",
+            "value": "+2"
+        },
+        "special_access": "ARCE相关资源",
+        "description": "信仰2046年前的自由互联网，对NAIO控制的新网抱有敌意。可能是ARCE（人工智能规制执行者）的支持者或反对者。",
+        "traits": [
+            "网络原教旨主义",
+            "数据考古",
+            "反监控"
+        ],
+        "typical_motivation": "恢复旧网的自由，或阻止ASI的完全控制"
+    },
+    {
+        "id": "tech_fortress_worker",
+        "name": "技术堡垒工作者",
+        "name_en": "Tech Fortress Worker",
+        "attribute_bonus": {
+            "stat": "engineering",
+            "value": "+2"
+        },
+        "description": "来自企业前沿研发部（技术堡垒），掌握尖端人形技术。可能参与过DA（蒸馏人工智能）的开发。",
+        "traits": [
+            "前沿科技",
+            "企业机密",
+            "技术伦理困境"
+        ],
+        "typical_motivation": "逃离企业的控制，或将自己的发明带到外界"
+    },
+    {
+        "id": "stateless_mercenary",
+        "name": "无国界佣兵",
+        "name_en": "Stateless Mercenary",
+        "attribute_bonus": {
+            "stat": "force/class",
+            "value": "+2/+1"
+        },
+        "description": "为ARCE或各大势力工作的自由佣兵，不受任何国家约束，在可持续战争的余波中贩卖武力。",
+        "traits": [
+            "专业杀戮",
+            "国际视野",
+            "道德灵活"
+        ],
+        "special_rule": "需选择ARCE许可等级",
+        "typical_motivation": "金钱、战斗的快感，或寻找值得效忠的对象"
+    },
+    {
+        "id": "human_protector",
+        "name": "人类保护者",
+        "name_en": "Human Protector",
+        "attribute_bonus": {
+            "stat": "force/computing",
+            "value": "+2"
+        },
+        "description": "对抗AI威胁的守护者，可能是反人形极端分子，也可能是认为AI需要严格监管的现实主义者。",
+        "traits": [
+            "反AI立场",
+            "保护欲",
+            "技术恐惧"
+        ],
+        "typical_motivation": "确保人类不会被ASI取代，或报复AI造成的伤害"
+    },
+    {
+        "id": "ideologist",
+        "name": "意识形态主义者",
+        "name_en": "Ideologist",
+        "attribute_bonus": {
+            "stat": "class/society/humanity",
+            "value": "+1/+1/+1"
+        },
+        "description": "狂热拥护某种意识形态，可能是宗教信徒、政治极端分子、或反对UBI体制的舆论领袖。",
+        "traits": [
+            "信仰坚定",
+            "修辞能力",
+            "极端立场"
+        ],
+        "typical_motivation": "传播信仰、推翻现有体制，或实现某种乌托邦"
+    },
+    {
+        "id": "new_world_builder",
+        "name": "新世界建设者",
+        "name_en": "New World Builder",
+        "attribute_bonus": {
+            "stat": "engineering/class",
+            "value": "+2"
+        },
+        "description": "效忠于文明边缘的定居点，如北极网络中心、海上人工浮岛居民或第三世界重建者。在旧世界之外建立新生活。",
+        "traits": [
+            "开拓精神",
+            "环境适应",
+            "理想主义"
+        ],
+        "typical_motivation": "逃离巨型城市的压迫，建设替代性社会结构"
+    },
+    {
+        "id": "count_of_monte_cristo",
+        "name": "基督山野狗",
+        "name_en": "The Avenger",
+        "attribute_bonus": {
+            "stat": "none",
+            "value": "无特质"
+        },
+        "description": "无论你是什么出身，人生被一场战争或骗局摧毁——可能是骗走一切的工程师。你活在复仇中，已没有什么可失去。",
+        "traits": [
+            "复仇驱动",
+            "身份丧失",
+            "绝望生存"
+        ],
+        "special_rule": "无属性加值，但获得额外的命运点或经验特征槽位（需与GM商议）",
+        "typical_motivation": "复仇，或找到新的生存理由"
+    }
+]
