@@ -67,6 +67,9 @@
                   </template>
                 </el-popover>
               </div>
+              <div v-if="当前硬件描述" class="description-text">
+                {{ 当前硬件描述 }}
+              </div>
             </el-form-item>
 
             <el-form-item v-if="character.类型 === 'Anthroform'" label="生产企业">
@@ -90,6 +93,9 @@
                     <el-icon class="info-icon"><InfoFilled /></el-icon>
                   </template>
                 </el-popover>
+              </div>
+              <div v-if="当前企业描述" class="description-text">
+                {{ 当前企业描述 }}
               </div>
             </el-form-item>
           </el-form>
@@ -135,7 +141,7 @@ import 企业技术数据 from "@/data/企业技术.json";
 
 const character = reactive({
   姓名: "",
-  类型: "Anthropos",
+  类型: "Anthroform",
   硬件规格: "",
   企业技术: "",
   起源: "",
@@ -159,18 +165,18 @@ const 企业技术选项 = 企业技术列表.map((item) => ({
   extra: item.英文名,
 }));
 
-// 计算属性：获取当前选择的硬件规格描述
+// 计算属性：获取当前选择的硬件规格效果描述
 const 当前硬件描述 = computed(() => {
   if (!character.硬件规格) return "";
   const selected = 硬件规格列表.find((item) => item.名称 === character.硬件规格);
-  return selected ? selected.描述 : "";
+  return selected ? selected.效果描述 || "" : "";
 });
 
-// 计算属性：获取当前选择的企业技术描述
+// 计算属性：获取当前选择的企业技术效果描述
 const 当前企业描述 = computed(() => {
   if (!character.企业技术) return "";
   const selected = 企业技术列表.find((item) => item.中文名 === character.企业技术);
-  return selected ? selected.描述 : "";
+  return selected ? selected.效果描述 || "" : "";
 });
 
 const onTypeChange = (type) => {
@@ -197,7 +203,7 @@ const onEnterpriseChange = (value) => {
     const selected = 企业技术列表.find((item) => item.中文名 === value);
     if (selected) {
       ElMessage.success(
-        `已选择 ${selected.中文名} - ${selected.特殊效果 || "无特殊效果"}`
+        `已选择 ${selected.中文名} - ${selected.效果描述 || "无效果描述"}`
       );
     }
   }
@@ -385,6 +391,21 @@ $cyber-darker: #050508;
     color: rgba(0, 243, 255, 0.7);
     transform: scale(1.1);
   }
+}
+
+// 描述文字样式
+.description-text {
+  margin-top: 8px;
+  padding: 10px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(0, 243, 255, 0.05);
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: "Microsoft YaHei", sans-serif;
 }
 
 // Popover 样式
