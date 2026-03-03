@@ -98,6 +98,16 @@
                 {{ 当前企业描述 }}
               </div>
             </el-form-item>
+
+            <!-- 属性点分配 -->
+            <AttributeAllocator
+              v-if="character.类型 === 'Anthroform' && character.属性点 > 0"
+              :属性点="character.属性点"
+              :属性上限="character.属性上限"
+              :属性="character.属性"
+              :属性列表="属性列表"
+              @update:属性="character.属性 = $event"
+            />
           </el-form>
         </el-card>
       </div>
@@ -136,8 +146,10 @@ import { reactive, computed } from "vue";
 import { ElMessage } from "element-plus";
 import { Plus, InfoFilled } from "@element-plus/icons-vue";
 import CyberSelect from "@/components/CyberSelect.vue";
+import AttributeAllocator from "@/components/AttributeAllocator.vue";
 import 硬件规格数据 from "@/data/硬件规格.json";
 import 企业技术数据 from "@/data/企业技术.json";
+import 基本属性数据 from "@/data/基本属性.json";
 
 const character = reactive({
   姓名: "",
@@ -145,12 +157,15 @@ const character = reactive({
   硬件规格: "",
   企业技术: "",
   起源: "",
-  属性点: "",
-  属性上限: 0,
+  属性点: 0,
+  已分配属性点: 0,
+  属性上限: 5,
+  属性: { 结构: 0, 力量: 0, 运动: 0, 算力: 0, 信息: 0, 功率: 0 },
 });
 
 const 硬件规格列表 = 硬件规格数据;
 const 企业技术列表 = 企业技术数据;
+const 属性列表 = 基本属性数据。属性系统;
 
 // 转换数据为选项格式
 const 硬件规格选项 = 硬件规格列表.map((item) => ({
@@ -184,7 +199,8 @@ const onTypeChange = (type) => {
   if (type === "Anthropos") {
     character.硬件规格 = "";
     character.企业技术 = "";
-    character.属性点 = "";
+    character.属性点 = 0;
+    character.属性 = { 结构：0, 力量：0, 运动：0, 算力：0, 信息：0, 功率：0 };
   }
 };
 
@@ -192,7 +208,9 @@ const onHardwareChange = (value) => {
   const selected = 硬件规格列表.find((item) => item.名称 === value);
   if (selected) {
     character.属性点 = selected.效果.属性点数加值;
-    character.分配属性点上限 = selected.效果.属性点数加值 + selected.效果.属性上限加值;
+    character.属性上限 = 5;
+    // 重置所有属性
+    character.属性 = { 结构：0, 力量：0, 运动：0, 算力：0, 信息：0, 功率：0 };
   }
 };
 
