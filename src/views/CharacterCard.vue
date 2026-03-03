@@ -27,7 +27,7 @@
     </div>
 
     <div class="three-column-layout">
-      <!-- 左栏:当前表单 -->
+      <!-- 左栏：当前表单 -->
       <div class="column column-left">
         <el-card class="form-card">
           <template #header>
@@ -35,72 +35,68 @@
           </template>
           <el-form :model="角色" label-position="top">
             <el-form-item label="角色名称" required>
-              <el-input v-model="character.姓名" placeholder="请输入角色名称" size="large" />
-            </el-form-item>
-
-            <el-form-item v-if="character.类型 === 'Anthroform'" label="硬件规格" required>
-              <el-select
-                v-model="character.硬件规格"
-                placeholder="请选择硬件规格"
+              <el-input
+                v-model="character.姓名"
+                placeholder="请输入角色名称"
                 size="large"
-                style="width: 100%"
-                @change="onHardwareChange"
-              >
-                <el-option
-                  v-for="item in 硬件规格列表"
-                  :key="item.id"
-                  :label="item.名称"
-                  :value="item.名称"
-                >
-                  <span>{{ item.名称 }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">
-                    属性点:{{ item.效果.属性点数加值 }} | 上限加值:{{ item.效果.属性上限加值 }}
-                  </span>
-                </el-option>
-              </el-select>
+              />
             </el-form-item>
 
-            <el-form-item v-if="character.类型 === 'Anthroform'" label="企业技术">
-              <el-select
-                v-model="character.企业技术"
-                placeholder="请选择企业技术（可选）"
-                size="large"
-                clearable
-                style="width: 100%"
-                @change="onEnterpriseChange"
-              >
-                <el-option
-                  v-for="item in 企业技术列表"
-                  :key="item.id"
-                  :label="item.中文名"
-                  :value="item.中文名"
+            <el-form-item
+              v-if="character.类型 === 'Anthroform'"
+              label="硬件规格"
+              required
+            >
+              <div style="display: flex; align-items: center; gap: 8px; width: 100%">
+                <CyberSelect
+                  v-model="character.硬件规格"
+                  placeholder="请选择硬件规格"
+                  :options="硬件规格选项"
+                  @change="onHardwareChange"
+                  style="flex: 1; min-width: 0"
+                />
+                <el-popover
+                  v-if="当前硬件描述"
+                  placement="right"
+                  :width="300"
+                  trigger="hover"
+                  :content="当前硬件描述"
                 >
-                  <span>{{ item.中文名 }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">
-                    {{ item.英文名 }}
-                  </span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-
-            <!-- 硬件规格描述 -->
-            <el-form-item v-if="character.类型 === 'Anthroform' && 当前硬件描述" label="硬件规格描述">
-              <div class="description-box">
-                <p class="description-text">{{ 当前硬件描述 }}</p>
+                  <template #reference>
+                    <el-icon class="info-icon"><InfoFilled /></el-icon>
+                  </template>
+                </el-popover>
               </div>
             </el-form-item>
 
-            <!-- 企业技术描述 -->
-            <el-form-item v-if="character.类型 === 'Anthroform' && 当前企业描述" label="企业背景">
-              <div class="description-box">
-                <p class="description-text">{{ 当前企业描述 }}</p>
+            <el-form-item v-if="character.类型 === 'Anthroform'" label="生产企业">
+              <div style="display: flex; align-items: center; gap: 8px; width: 100%">
+                <CyberSelect
+                  v-model="character.企业技术"
+                  placeholder="请选择生产企业（可选）"
+                  :options="企业技术选项"
+                  clearable
+                  @change="onEnterpriseChange"
+                  style="flex: 1; min-width: 0"
+                />
+                <el-popover
+                  v-if="当前企业描述"
+                  placement="right"
+                  :width="300"
+                  trigger="hover"
+                  :content="当前企业描述"
+                >
+                  <template #reference>
+                    <el-icon class="info-icon"><InfoFilled /></el-icon>
+                  </template>
+                </el-popover>
               </div>
             </el-form-item>
           </el-form>
         </el-card>
       </div>
 
-      <!-- 中间栏:待添加 -->
+      <!-- 中间栏：待添加 -->
       <div class="column column-middle">
         <el-card class="placeholder-card">
           <template #header>
@@ -113,7 +109,7 @@
         </el-card>
       </div>
 
-      <!-- 右栏:待添加 -->
+      <!-- 右栏：待添加 -->
       <div class="column column-right">
         <el-card class="placeholder-card">
           <template #header>
@@ -132,22 +128,36 @@
 <script setup>
 import { reactive, computed } from "vue";
 import { ElMessage } from "element-plus";
-import { Plus } from "@element-plus/icons-vue";
+import { Plus, InfoFilled } from "@element-plus/icons-vue";
+import CyberSelect from "@/components/CyberSelect.vue";
 import 硬件规格数据 from "@/data/硬件规格.json";
 import 企业技术数据 from "@/data/企业技术.json";
 
 const character = reactive({
-  姓名:"",
-  类型:"Anthropos",
-  硬件规格:"",
-  企业技术:"",
-  起源:"",
-  属性点:"",
-  属性上限:0,
+  姓名: "",
+  类型: "Anthropos",
+  硬件规格: "",
+  企业技术: "",
+  起源: "",
+  属性点: "",
+  属性上限: 0,
 });
 
 const 硬件规格列表 = 硬件规格数据;
 const 企业技术列表 = 企业技术数据;
+
+// 转换数据为选项格式
+const 硬件规格选项 = 硬件规格列表.map((item) => ({
+  label: item.名称,
+  value: item.名称,
+  extra: `属性点:${item.效果.属性点数加值} | 上限加值:${item.效果.属性上限加值}`,
+}));
+
+const 企业技术选项 = 企业技术列表.map((item) => ({
+  label: item.中文名,
+  value: item.中文名,
+  extra: item.英文名,
+}));
 
 // 计算属性：获取当前选择的硬件规格描述
 const 当前硬件描述 = computed(() => {
@@ -160,7 +170,7 @@ const 当前硬件描述 = computed(() => {
 const 当前企业描述 = computed(() => {
   if (!character.企业技术) return "";
   const selected = 企业技术列表.find((item) => item.中文名 === character.企业技术);
-  return selected ? selected.背景 : "";
+  return selected ? selected.描述 : "";
 });
 
 const onTypeChange = (type) => {
@@ -186,7 +196,9 @@ const onEnterpriseChange = (value) => {
   } else {
     const selected = 企业技术列表.find((item) => item.中文名 === value);
     if (selected) {
-      ElMessage.success(`已选择 ${selected.中文名} - ${selected.特殊效果 || '无特殊效果'}`);
+      ElMessage.success(
+        `已选择 ${selected.中文名} - ${selected.特殊效果 || "无特殊效果"}`
+      );
     }
   }
 };
@@ -354,23 +366,36 @@ $cyber-darker: #050508;
   margin-bottom: 8px;
 }
 
-// 描述框样式
-.description-box {
-  background: rgba(10, 10, 15, 0.8);
-  border: 1px solid rgba(0, 243, 255, 0.2);
-  border-radius: 4px;
-  padding: 16px;
+:deep(.el-form-item) {
   width: 100%;
-  box-sizing: border-box;
 }
 
-.description-text {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-  line-height: 1.8;
-  margin: 0;
-  text-align: justify;
+:deep(.el-form-item__content) {
+  width: 100% !important;
+}
+
+// 信息图标样式
+.info-icon {
+  color: $cyber-cyan;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: rgba(0, 243, 255, 0.7);
+    transform: scale(1.1);
+  }
+}
+
+// Popover 样式
+:deep(.el-popover) {
+  background: rgba(10, 10, 15, 0.98) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(0, 243, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   font-family: "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 // 输入框样式
@@ -388,61 +413,6 @@ $cyber-darker: #050508;
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
     border-color: $cyber-cyan;
   }
-}
-
-// 选择框样式
-:deep(.el-select) {
-  width: 100%;
-
-  .el-input__wrapper {
-    background: rgba(10, 10, 15, 0.8);
-    border: 1px solid rgba(0, 243, 255, 0.2);
-    box-shadow: none;
-
-    .el-input__inner {
-      color: #fff;
-      font-family: "Courier New", "Consolas", monospace;
-    }
-
-    .el-select__caret {
-      color: $cyber-cyan;
-    }
-
-    &:focus-within {
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-      border-color: $cyber-cyan;
-    }
-  }
-}
-
-:deep(.el-select-dropdown) {
-  background: rgba(10, 10, 15, 0.98);
-  border: 1px solid rgba(0, 243, 255, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 243, 255, 0.15);
-}
-
-:deep(.el-select-dropdown__item) {
-  color: rgba(255, 255, 255, 0.8);
-  font-family: "Courier New", "Consolas", monospace;
-
-  &.selected {
-    color: $cyber-cyan;
-    font-weight: 700;
-  }
-
-  &.hover,
-  &:hover {
-    background-color: rgba(0, 243, 255, 0.15);
-    color: #fff;
-  }
-}
-
-:deep(.el-select-dropdown__empty) {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-:deep(.popper__arrow) {
-  display: none;
 }
 
 .placeholder-content {
