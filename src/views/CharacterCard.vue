@@ -27,7 +27,7 @@
     </div>
 
     <div class="three-column-layout">
-      <!-- 左栏：当前表单 -->
+      <!-- 左栏:当前表单 -->
       <div class="column column-left">
         <el-card class="form-card">
           <template #header>
@@ -112,7 +112,7 @@
         </el-card>
       </div>
 
-      <!-- 中间栏：待添加 -->
+      <!-- 中间栏:待添加 -->
       <div class="column column-middle">
         <el-card class="placeholder-card">
           <template #header>
@@ -125,7 +125,7 @@
         </el-card>
       </div>
 
-      <!-- 右栏：待添加 -->
+      <!-- 右栏:待添加 -->
       <div class="column column-right">
         <el-card class="placeholder-card">
           <template #header>
@@ -165,7 +165,7 @@ const character = reactive({
 
 const 硬件规格列表 = 硬件规格数据;
 const 企业技术列表 = 企业技术数据;
-const 属性列表 = 基本属性数据。属性系统;
+const 属性列表 = 基本属性数据.属性系统;
 
 // 转换数据为选项格式
 const 硬件规格选项 = 硬件规格列表.map((item) => ({
@@ -180,14 +180,14 @@ const 企业技术选项 = 企业技术列表.map((item) => ({
   extra: item.英文名,
 }));
 
-// 计算属性：获取当前选择的硬件规格效果描述
+// 计算属性:获取当前选择的硬件规格效果描述
 const 当前硬件描述 = computed(() => {
   if (!character.硬件规格) return "";
   const selected = 硬件规格列表.find((item) => item.名称 === character.硬件规格);
   return selected ? selected.效果描述 || "" : "";
 });
 
-// 计算属性：获取当前选择的企业技术效果描述
+// 计算属性:获取当前选择的企业技术效果描述
 const 当前企业描述 = computed(() => {
   if (!character.企业技术) return "";
   const selected = 企业技术列表.find((item) => item.中文名 === character.企业技术);
@@ -200,7 +200,7 @@ const onTypeChange = (type) => {
     character.硬件规格 = "";
     character.企业技术 = "";
     character.属性点 = 0;
-    character.属性 = { 结构：0, 力量：0, 运动：0, 算力：0, 信息：0, 功率：0 };
+    character.属性 = { 结构: 0, 力量: 0, 运动: 0, 算力: 0, 信息: 0, 功率: 0 };
   }
 };
 
@@ -210,7 +210,7 @@ const onHardwareChange = (value) => {
     character.属性点 = selected.效果.属性点数加值;
     character.属性上限 = 5;
     // 重置所有属性
-    character.属性 = { 结构：0, 力量：0, 运动：0, 算力：0, 信息：0, 功率：0 };
+    character.属性 = { 结构: 0, 力量: 0, 运动: 0, 算力: 0, 信息: 0, 功率: 0 };
   }
 };
 
