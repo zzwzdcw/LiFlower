@@ -4,39 +4,22 @@
     <el-form-item label="属性点分配">
       <div class="attribute-section">
         <div class="attribute-points-info">
-          <span
-            >可用属性点:<span class="points-highlight">{{ 剩余属性点 }}</span> /
-            {{ 总属性点 }}</span
-          >
+          <span>可用属性点：<span class="points-highlight">{{ 剩余属性点 }}</span> / {{ 总属性点 }}</span>
         </div>
 
         <div v-for="属性名 in 属性顺序" :key="属性名" class="attribute-row">
           <div class="attribute-label">
             <span>{{ 属性名 }}</span>
-            <el-tooltip
-              :content="获取属性描述(属性名)"
-              placement="top"
-              :disabled="!获取属性描述(属性名)"
-            >
+            <el-tooltip :content="获取属性描述 (属性名)" placement="top" :disabled="!获取属性描述 (属性名)">
               <el-icon class="info-icon-small"><InfoFilled /></el-icon>
             </el-tooltip>
           </div>
           <div class="attribute-controls">
-            <el-button
-              size="small"
-              :disabled="!可以减少属性(属性名)"
-              @click="减少属性(属性名)"
-              class="attr-btn"
-            >
+            <el-button size="small" :disabled="!可以减少属性 (属性名)" @click="减少属性 (属性名)" class="attr-btn">
               <el-icon><Minus /></el-icon>
             </el-button>
-            <span class="attribute-value">{{ 当前属性值(属性名) }}</span>
-            <el-button
-              size="small"
-              :disabled="!可以增加属性(属性名)"
-              @click="增加属性(属性名)"
-              class="attr-btn"
-            >
+            <span class="attribute-value">{{ 当前属性值 (属性名) }}</span>
+            <el-button size="small" :disabled="!可以增加属性 (属性名)" @click="增加属性 (属性名)" class="attr-btn">
               <el-icon><Plus /></el-icon>
             </el-button>
           </div>
@@ -52,19 +35,19 @@ import { ElMessage } from "element-plus";
 import { Plus, Minus, InfoFilled } from "@element-plus/icons-vue";
 
 const props = defineProps({
-  属性点: {
+  属性点：{
     type: Number,
     default: 0,
   },
-  属性上限: {
+  属性上限：{
     type: Number,
     default: 5,
   },
-  属性: {
+  属性：{
     type: Object,
-    default: () => ({ 结构: 0, 力量: 0, 运动: 0, 算力: 0, 信息: 0, 功率: 0 }),
+    default: () => ({ 结构：0, 力量：0, 运动：0, 算力：0, 信息：0, 功率：0 }),
   },
-  属性列表: {
+  属性列表：{
     type: Object,
     default: () => ({}),
   },
@@ -90,27 +73,27 @@ const 剩余属性点 = computed(() => {
 
 // 获取当前属性值
 const 当前属性值 = (属性名) => {
-  return props.属性[属性名] || 0;
+  return props.属性 [属性名] || 0;
 };
 
 // 检查属性是否可以增加
 const 可以增加属性 = (属性名) => {
-  const 当前值 = props.属性[属性名] || 0;
+  const 当前值 = props.属性 [属性名] || 0;
   return 当前值 < props.属性上限 && 剩余属性点.value > 0;
 };
 
 // 检查属性是否可以减少
 const 可以减少属性 = (属性名) => {
-  return (props.属性[属性名] || 0) > 0;
+  return (props.属性 [属性名] || 0) > 0;
 };
 
 // 增加属性
 const 增加属性 = (属性名) => {
-  if (可以增加属性(属性名)) {
-    const 属性 = { ...props.属性, [属性名]: (props.属性[属性名] || 0) + 1 };
-    emit("update:属性", new 属性);
+  if (可以增加属性 (属性名)) {
+    const newAttrs = { ...props.属性，[属性名]: (props.属性 [属性名] || 0) + 1 };
+    emit("update:属性", newAttrs);
   } else {
-    const 当前值 = props.属性[属性名] || 0;
+    const 当前值 = props.属性 [属性名] || 0;
     if (当前值 >= props.属性上限) {
       ElMessage.warning("单项属性上限为 5 点");
     } else {
@@ -121,16 +104,16 @@ const 增加属性 = (属性名) => {
 
 // 减少属性
 const 减少属性 = (属性名) => {
-  if (可以减少属性(属性名)) {
-    const 属性 = { ...props.属性, [属性名]: (props.属性[属性名] || 0) - 1 };
-    emit("update:属性", new 属性);
+  if (可以减少属性 (属性名)) {
+    const newAttrs = { ...props.属性，[属性名]: (props.属性 [属性名] || 0) - 1 };
+    emit("update:属性", newAttrs);
   }
 };
 
 // 获取属性描述
 const 获取属性描述 = (属性名) => {
-  const 属性 = props.属性列表[属性名];
-  return 属性 ? 属性.描述 : "";
+  const attr = props.属性列表 [属性名];
+  return attr ? attr.描述："";
 };
 </script>
 
