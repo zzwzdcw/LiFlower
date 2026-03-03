@@ -28,8 +28,8 @@
         :class="{ selected: item.value === modelValue }"
         @click="selectOption(item)"
       >
-        <span class="option-label">{{ item.label }}</span>
-        <span class="option-extra">{{ item.extra }}</span>
+        <div class="option-main">{{ item.label }}</div>
+        <div v-if="item.extra" class="option-sub">{{ item.extra }}</div>
       </div>
     </div>
   </teleport>
@@ -235,29 +235,35 @@ $cyber-darker: #050508;
 
 .cyber-select-option {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;  // 纵向排列
+  gap: 4px;                // 两行之间的间距
   padding: 10px 14px;
   cursor: pointer;
   transition: all 0.3s ease;
 
-  .option-label {
-    color: rgba(255, 255, 255, 0.8);
+  .option-main {
+    color: rgba(255, 255, 255, 0.9);
     font-family: 'Courier New', 'Consolas', monospace;
     font-size: 14px;
+    white-space: nowrap;      // 不换行
+    overflow: hidden;         // 溢出隐藏
+    text-overflow: ellipsis;  // 显示省略号
   }
 
-  .option-extra {
+  .option-sub {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
+    font-size: 11px;
     font-family: 'Courier New', 'Consolas', monospace;
+    white-space: nowrap;      // 不换行
+    overflow: hidden;         // 溢出隐藏
+    text-overflow: ellipsis;  // 显示省略号
   }
 
   &:hover {
     background-color: rgba(0, 243, 255, 0.15);
 
-    .option-label,
-    .option-extra {
+    .option-main,
+    .option-sub {
       color: #fff;
     }
   }
@@ -265,7 +271,7 @@ $cyber-darker: #050508;
   &.selected {
     background-color: rgba(0, 243, 255, 0.1);
 
-    .option-label {
+    .option-main {
       color: $cyber-cyan;
       font-weight: 700;
     }

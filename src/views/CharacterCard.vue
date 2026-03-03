@@ -1,6 +1,6 @@
 <template>
   <div class="character-card-container">
-    <!-- 顶部标题栏 -->
+    <!-- ==================== 顶部标题栏（始终显示在最上面）==================== -->
     <div class="top-bar">
       <div class="title-section">
         <h1 class="main-title">锂之花 <span class="title-separator">//</span> 角色卡</h1>
@@ -10,14 +10,14 @@
         <div class="switch-segments">
           <div
             class="segment"
-            :class="{ active: character.type === 'Anthropos' }"
+            :class="{ active: isHumanMode }"
             @click="onTypeChange('Anthropos')"
           >
             人类 Anthropos
           </div>
           <div
             class="segment"
-            :class="{ active: character.type === 'Anthroform' }"
+            :class="{ active: isDollMode }"
             @click="onTypeChange('Anthroform')"
           >
             人形 Anthroform
@@ -26,316 +26,281 @@
       </div>
     </div>
 
-    <div class="three-column-layout">
-      <!-- 左栏：当前表单 -->
-      <div class="column column-left">
-        <el-card class="form-card">
-          <template #header>
-            <span class="card-header">基本信息</span>
-          </template>
-          <el-form :model="character" label-position="top">
-            <el-form-item label="角色名称" required>
-              <el-input
-                v-model="character.name"
-                placeholder="请输入角色名称"
-                size="large"
-              />
-            </el-form-item>
+    <!-- ==================== 模块网格（按顺序排列）==================== -->
+    <div
+      class="modules-container"
+      :class="{
+        'debug-mode': modeStore.currentMode === 'debug',
+        'welcome-layout': modeStore.currentMode === 'welcome'
+      }"
+    >
+      <!-- M0: 导入 -->
+      <StandardModule module-id="M0" :show-in-modes="['welcome']">
+        <M0_Import />
+      </StandardModule>
 
-            <el-form-item
-              v-if="character.type === 'Anthroform'"
-              label="硬件规格"
-              required
-            >
-              <div style="display: flex; align-items: center; gap: 8px; width: 100%">
-                <CyberSelect
-                  v-model="character.hardwareSpec"
-                  placeholder="请选择硬件规格"
-                  :options="hardwareSpecOptions"
-                  @change="onHardwareChange"
-                  style="flex: 1; min-width: 0"
-                />
-                <el-popover
-                  v-if="currentHardwareDesc"
-                  placement="right"
-                  :width="300"
-                  trigger="hover"
-                  :content="currentHardwareDesc"
-                >
-                  <template #reference>
-                    <el-icon class="info-icon"><InfoFilled /></el-icon>
-                  </template>
-                </el-popover>
-              </div>
-              <div v-if="currentHardwareDesc" class="description-text">
-                {{ currentHardwareDesc }}
-              </div>
-            </el-form-item>
+      <!-- M1: 人类车卡-基础信息 -->
+      <StandardModule module-id="M1" :show-in-modes="['human-prep']">
+        <M1_HumanBasic />
+      </StandardModule>
 
-            <el-form-item v-if="character.type === 'Anthroform'" label="生产企业">
-              <div style="display: flex; align-items: center; gap: 8px; width: 100%">
-                <CyberSelect
-                  v-model="character.manufacturer"
-                  placeholder="请选择生产企业（可选）"
-                  :options="manufacturerOptions"
-                  :clearable="true"
-                  @change="onEnterpriseChange"
-                  style="flex: 1; min-width: 0"
-                />
-                <el-popover
-                  v-if="currentManufacturerDesc"
-                  placement="right"
-                  :width="300"
-                  trigger="hover"
-                  :content="currentManufacturerDesc"
-                >
-                  <template #reference>
-                    <el-icon class="info-icon"><InfoFilled /></el-icon>
-                  </template>
-                </el-popover>
-              </div>
-              <div v-if="currentManufacturerDesc" class="description-text">
-                {{ currentManufacturerDesc }}
-              </div>
-            </el-form-item>
+      <!-- M2: 人形车卡-基础信息 -->
+      <StandardModule module-id="M2" :show-in-modes="['doll-prep']">
+        <M2_DollBasic />
+      </StandardModule>
 
-            <!-- 属性点分配 -->
-            <AttributeAllocator
-              v-if="character.type === 'Anthroform' && character.attributePoints > 0"
-              :attribute-points="character.attributePoints"
-              :attribute-limit="character.attributeLimit"
-              :attributes="character.attributes"
-              :attribute-data="attributeData"
-              :source-info="attributePointsInfo"
-              @update:attributes="character.attributes = $event"
-            />
-          </el-form>
-        </el-card>
+      <!-- M3: 属性（人形） -->
+      <StandardModule module-id="M3" :show-in-modes="['doll-prep']">
+        <M3_DollAttributes />
+      </StandardModule>
+
+      <!-- M4: 属性（人类）- 特殊情况下显示 -->
+      <StandardModule module-id="M4" :show-in-modes="['human-prep']">
+        <M4_HumanAttributes />
+      </StandardModule>
+
+      <!-- M5: 技能（人类） -->
+      <StandardModule module-id="M5" :show-in-modes="['human-prep']">
+        <M5_HumanSkills />
+      </StandardModule>
+
+      <!-- M6: 专长（人类） -->
+      <StandardModule module-id="M6" :show-in-modes="['human-prep']">
+        <M6_HumanTalents />
+      </StandardModule>
+
+      <!-- M7: 人形芯片 -->
+      <StandardModule module-id="M7" :show-in-modes="['doll-prep']">
+        <M7_DollChips />
+      </StandardModule>
+
+      <!-- M8: 装备（人类） -->
+      <StandardModule module-id="M8" :show-in-modes="['human-prep']">
+        <M8_HumanGear />
+      </StandardModule>
+
+      <!-- M9: 尖端武装（人形） -->
+      <StandardModule module-id="M9" :show-in-modes="['doll-prep']">
+        <M9_DollWeapon />
+      </StandardModule>
+
+      <!-- M10: 装备（人形） -->
+      <StandardModule module-id="M10" :show-in-modes="['doll-prep']">
+        <M10_DollGear />
+      </StandardModule>
+
+      <!-- M11: 预留模块（仅调试模式显示） -->
+      <StandardModule module-id="M11" :show-in-modes="['debug']">
+        <M11_Empty />
+      </StandardModule>
+
+      <!-- M12: 基础资料（人类） -->
+      <StandardModule module-id="M12" :show-in-modes="['human-action']">
+        <M12_HumanBasicInfo />
+      </StandardModule>
+
+      <!-- M13: 基础资料（人形） -->
+      <StandardModule module-id="M13" :show-in-modes="['doll-action']">
+        <M13_DollBasicInfo />
+      </StandardModule>
+
+      <!-- M14: 检定数据（人类） -->
+      <StandardModule module-id="M14" :show-in-modes="['human-action']">
+        <M14_HumanCheck />
+      </StandardModule>
+
+      <!-- M15: 检定数据（人形） -->
+      <StandardModule module-id="M15" :show-in-modes="['doll-action']">
+        <M15_DollCheck />
+      </StandardModule>
+
+      <!-- M16: 角色状态（人类） -->
+      <StandardModule module-id="M16" :show-in-modes="['human-action']">
+        <M16_HumanStatus />
+      </StandardModule>
+
+      <!-- M17: 角色状态（人形） -->
+      <StandardModule module-id="M17" :show-in-modes="['doll-action']">
+        <M17_DollStatus />
+      </StandardModule>
+
+      <!-- M18: 备忘录 -->
+      <StandardModule module-id="M18" :show-in-modes="['human-action', 'doll-action']">
+        <M18_Memo />
+      </StandardModule>
+
+      <!-- M97: 转换按钮（作为分割线，占满整行，裸样式） -->
+      <StandardModule
+        module-id="M97"
+        :show-in-modes="['human-prep', 'human-action', 'doll-prep', 'doll-action']"
+        class="module-functional module-divider-row"
+        :bare="true"
+      >
+        <M97_Switch />
+      </StandardModule>
+
+      <!-- M98: 导入导出（功能性模块，沉底） -->
+      <StandardModule
+        module-id="M98"
+        :show-in-modes="['human-prep', 'human-action', 'doll-prep', 'doll-action']"
+        class="module-functional"
+      >
+        <M98_DataManager />
+      </StandardModule>
+
+      <!-- M99: 清除缓存（功能性模块，沉底，欢迎模式不显示） -->
+      <StandardModule
+        module-id="M99"
+        :show-in-modes="['human-prep', 'human-action', 'doll-prep', 'doll-action']"
+        class="module-functional"
+      >
+        <M99_ClearCache />
+      </StandardModule>
+    </div>
+
+    <!-- ==================== 调试控制栏（开发调试用，可随时删除）==================== -->
+    <div class="debug-bar">
+      <div class="debug-title">🛠️ 开发调试工具（可删除）</div>
+      <div class="debug-controls">
+        <button
+          v-for="mode in modeList"
+          :key="mode.value"
+          :class="['debug-btn', { active: modeStore.currentMode === mode.value }]"
+          @click="modeStore.setMode(mode.value)"
+        >
+          {{ mode.label }}
+        </button>
+        <div class="divider"></div>
+        <button
+          :class="['debug-btn', 'debug-toggle', { active: modeStore.isDebug }]"
+          @click="modeStore.toggleDebug()"
+        >
+          {{ modeStore.isDebug ? '🔍 退出调试' : '🔍 调试模式' }}
+        </button>
       </div>
-
-      <!-- 中间栏：待添加 -->
-      <div class="column column-middle">
-        <el-card class="placeholder-card">
-          <template #header>
-            <span class="card-header">中间栏位</span>
-          </template>
-          <div class="placeholder-content">
-            <el-icon size="48" color="#c0c4cc"><Plus /></el-icon>
-            <p>待添加内容</p>
-          </div>
-        </el-card>
-      </div>
-
-      <!-- 右栏：待添加 -->
-      <div class="column column-right">
-        <el-card class="placeholder-card">
-          <template #header>
-            <span class="card-header">右边栏位</span>
-          </template>
-          <div class="placeholder-content">
-            <el-icon size="48" color="#c0c4cc"><Plus /></el-icon>
-            <p>待添加内容</p>
-          </div>
-        </el-card>
+      <div class="debug-info">
+        当前: {{ currentModeLabel }} | 显示模块数: {{ visibleModuleCount }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, computed } from "vue";
+import { computed } from "vue";
 import { ElMessage } from "element-plus";
-import { Plus, InfoFilled, Warning } from "@element-plus/icons-vue";
-import CyberSelect from "@/components/CyberSelect.vue";
-import AttributeAllocator from "@/components/AttributeAllocator.vue";
+import { useModeStore } from "@/stores/mode";
+import StandardModule from "@/components/StandardModule.vue";
 
-// 导入数据文件
-import hardwareSpecData from "@/data/硬件规格.json";
-import manufacturerData from "@/data/企业技术.json";
-import attributeDataJson from "@/data/基本属性.json";
+// ==================== 导入所有模块 ====================
+import M0_Import from "@/modules/M0_Import.vue";
+import M1_HumanBasic from "@/modules/M1_HumanBasic.vue";
+import M2_DollBasic from "@/modules/M2_DollBasic.vue";
+import M3_DollAttributes from "@/modules/M3_DollAttributes.vue";
+import M4_HumanAttributes from "@/modules/M4_HumanAttributes.vue";
+import M5_HumanSkills from "@/modules/M5_HumanSkills.vue";
+import M6_HumanTalents from "@/modules/M6_HumanTalents.vue";
+import M7_DollChips from "@/modules/M7_DollChips.vue";
+import M8_HumanGear from "@/modules/M8_HumanGear.vue";
+import M9_DollWeapon from "@/modules/M9_DollWeapon.vue";
+import M10_DollGear from "@/modules/M10_DollGear.vue";
+import M11_Empty from "@/modules/M11_Empty.vue";
+import M12_HumanBasicInfo from "@/modules/M12_HumanBasicInfo.vue";
+import M13_DollBasicInfo from "@/modules/M13_DollBasicInfo.vue";
+import M14_HumanCheck from "@/modules/M14_HumanCheck.vue";
+import M15_DollCheck from "@/modules/M15_DollCheck.vue";
+import M16_HumanStatus from "@/modules/M16_HumanStatus.vue";
+import M17_DollStatus from "@/modules/M17_DollStatus.vue";
+import M18_Memo from "@/modules/M18_Memo.vue";
+import M97_Switch from "@/modules/M97_Switch.vue";
+import M98_DataManager from "@/modules/M98_DataManager.vue";
+import M99_ClearCache from "@/modules/M99_ClearCache.vue";
 
-/**
- * 角色数据对象
- * @property {String} name - 角色名称
- * @property {String} type - 角色类型：Anthropos(人类) / Anthroform(人形)
- * @property {String} hardwareSpec - 硬件规格
- * @property {String} manufacturer - 生产企业
- * @property {String} origin - 起源
- * @property {Number} attributePoints - 属性点总数
- * @property {Number} attributeLimit - 单项属性上限
- * @property {Object} attributes - 各项属性值
- */
-const character = reactive({
-  name: "",
-  type: "Anthroform",
-  hardwareSpec: "",
-  manufacturer: "",
-  origin: "",
-  baseAttributePoints: 0,  // 基础属性点（来自硬件规格）
-  attributePoints: 0,      // 总属性点（含企业加值）
-  attributeLimit: 5,
-  attributes: { structure: 0, strength: 0, athletics: 0, compute: 0, information: 0, power: 0 },
+// ==================== 初始化 ====================
+const modeStore = useModeStore();
+
+// ==================== 模式列表（用于调试栏）====================
+const modeList = [
+  { value: "welcome", label: "欢迎" },
+  { value: "human-prep", label: "人类整备" },
+  { value: "human-action", label: "人类行动" },
+  { value: "doll-prep", label: "人形整备" },
+  { value: "doll-action", label: "人形行动" },
+];
+
+// ==================== 计算属性 ====================
+const currentModeLabel = computed(() => {
+  const mode = modeList.find((m) => m.value === modeStore.currentMode);
+  return mode?.label || modeStore.currentMode;
 });
 
-// 数据列表
-const hardwareSpecList = hardwareSpecData;
-const manufacturerList = manufacturerData;
-const attributeData = attributeDataJson.attributeSystem;
-
-/**
- * 硬件规格选项
- * @property {String} label - 显示名称
- * @property {String} value - 值
- * @property {String} extra - 额外信息（属性点和上限加值）
- */
-const hardwareSpecOptions = hardwareSpecList.map((item) => ({
-  label: item.name,
-  value: item.name,
-  extra: `属性点:${item.effect.attributePointsBonus} | 上限加值:${item.effect.attributeLimitBonus}`,
-}));
-
-/**
- * 生产企业选项
- * @property {String} label - 中文名称
- * @property {String} value - 值
- * @property {String} extra - 英文名称
- */
-const manufacturerOptions = manufacturerList.map((item) => ({
-  label: item.nameZh,
-  value: item.nameZh,
-  extra: item.nameEn,
-}));
-
-// 计算已分配属性点总数
-const allocatedPoints = computed(() => {
-  return Object.values(character.attributes).reduce((sum, val) => sum + val, 0);
+// 判断当前是否是人类相关模式（用于顶部按钮高亮）
+const isHumanMode = computed(() => {
+  return (
+    modeStore.currentMode === "human-prep" ||
+    modeStore.currentMode === "human-action" ||
+    (modeStore.currentMode === "welcome" && modeStore.characterType === "human")
+  );
 });
 
-// 计算属性：获取当前选择的硬件规格效果描述
-const currentHardwareDesc = computed(() => {
-  if (!character.hardwareSpec) return "";
-  const selected = hardwareSpecList.find((item) => item.name === character.hardwareSpec);
-  return selected ? selected.effectDescription || "" : "";
+// 判断当前是否是人形相关模式（用于顶部按钮高亮）
+const isDollMode = computed(() => {
+  return (
+    modeStore.currentMode === "doll-prep" ||
+    modeStore.currentMode === "doll-action" ||
+    (modeStore.currentMode === "welcome" && modeStore.characterType === "doll")
+  );
 });
 
-// 计算属性：获取当前选择的企业技术效果描述
-const currentManufacturerDesc = computed(() => {
-  if (!character.manufacturer) return "";
-  const selected = manufacturerList.find((item) => item.nameZh === character.manufacturer);
-  return selected ? selected.effectDescription || "" : "";
+// 计算当前显示的模块数（调试用）
+const visibleModuleCount = computed(() => {
+  if (modeStore.isDebug) return 22; // 调试模式显示所有
+  const mode = modeStore.currentMode;
+  const moduleVisibility = {
+    welcome: 2, // M0, M99
+    "human-prep": 9, // M1, M4, M5, M6, M8, M97, M98, M99 + 其他
+    "human-action": 5, // M12, M14, M16, M18, M97, M98, M99
+    "doll-prep": 10, // M2, M3, M7, M9, M10, M97, M98, M99
+    "doll-action": 5, // M13, M15, M17, M18, M97, M98, M99
+  };
+  return moduleVisibility[mode] || 0;
 });
 
-// 计算属性：获取当前企业技术的属性点加值
-const manufacturerAttributeBonus = computed(() => {
-  if (!character.manufacturer) return 0;
-  const selected = manufacturerList.find((item) => item.nameZh === character.manufacturer);
-  return selected?.effect?.attributePointsBonus || 0;
-});
-
-// 计算属性：显示属性点来源信息
-const attributePointsInfo = computed(() => {
-  const hardware = character.hardwareSpec || "未选择";
-  const manufacturer = character.manufacturer || "无";
-  const bonus = manufacturerAttributeBonus.value;
-  return `硬件规格：${character.baseAttributePoints}${bonus > 0 ? ` + 企业加值：${bonus}` : ""}`;
-});
-
-/**
- * 切换角色类型
- * @param {String} type - 角色类型：Anthropos 或 Anthroform
- */
+// ==================== 方法 ====================
 const onTypeChange = (type) => {
-  character.type = type;
+  // 如果在欢迎模式，点击按钮直接切换到对应的车卡模式
+  if (modeStore.currentMode === "welcome") {
+    if (type === "Anthropos") {
+      enterHumanPrep();
+    } else if (type === "Anthroform") {
+      enterDollPrep();
+    }
+    return;
+  }
+
+  // 在其他模式下，切换到对应的模式
   if (type === "Anthropos") {
-    character.hardwareSpec = "";
-    character.manufacturer = "";
-    character.baseAttributePoints = 0;
-    character.attributePoints = 0;
-    character.attributes = { structure: 0, strength: 0, athletics: 0, compute: 0, information: 0, power: 0 };
+    // 当前是人类相关模式，切换到人类整备模式
+    modeStore.setCharacterType("human");
+    modeStore.setMode("human-prep");
+    ElMessage.success("切换到人类整备模式");
+  } else if (type === "Anthroform") {
+    // 当前是人形相关模式，切换到人形整备模式
+    modeStore.setCharacterType("doll");
+    modeStore.setMode("doll-prep");
+    ElMessage.success("切换到人形整备模式");
   }
 };
 
-/**
- * 硬件规格变更处理
- * @param {String} value - 选中的硬件规格名称
- */
-const onHardwareChange = (value) => {
-  const selected = hardwareSpecList.find((item) => item.name === value);
-  if (selected) {
-    // 设置基础属性点（来自硬件规格的效果）
-    character.baseAttributePoints = selected.effect.attributePointsBonus;
-    character.attributeLimit = 5;
-    // 重置所有属性为 0
-    character.attributes = { structure: 0, strength: 0, athletics: 0, compute: 0, information: 0, power: 0 };
-    // 重置生产企业
-    character.manufacturer = "";
-    // 更新总属性点（基础 + 企业加值，此时企业加值为 0）
-    character.attributePoints = character.baseAttributePoints;
-  }
+const enterHumanPrep = () => {
+  modeStore.setCharacterType("human");
+  modeStore.setMode("human-prep");
+  ElMessage.success("进入人类整备模式");
 };
 
-/**
- * 生产企业变更处理
- * @param {String} value - 选中的企业名称
- */
-const onEnterpriseChange = (value) => {
-  const oldBonus = manufacturerAttributeBonus.value;
-  let newBonus = 0;
-
-  if (!value) {
-    // 取消选择企业，减去加值
-    newBonus = 0;
-    character.manufacturer = "";
-    character.attributePoints = character.baseAttributePoints;
-    ElMessage.info("已取消选择生产企业");
-  } else {
-    const selected = manufacturerList.find((item) => item.nameZh === value);
-    if (selected) {
-      newBonus = selected.effect?.attributePointsBonus || 0;
-      character.manufacturer = value;
-      // 更新总属性点（基础 + 新企业加值）
-      character.attributePoints = character.baseAttributePoints + newBonus;
-      ElMessage.success(
-        `已选择 ${selected.nameZh} - ${selected.effectDescription || "无效果描述"}${newBonus > 0 ? ` (属性点 +${newBonus})` : ""}`
-      );
-    }
-  }
-
-  // 如果总属性点减少，从已分配属性中扣除
-  const pointDifference = oldBonus - newBonus;
-  if (pointDifference > 0 && allocatedPoints.value > 0) {
-    // 需要扣除的属性点数
-    let pointsToDeduct = pointDifference;
-    if (pointsToDeduct > allocatedPoints.value) {
-      pointsToDeduct = allocatedPoints.value;
-    }
-
-    // 从各属性中平均扣除
-    const newAttrs = { ...character.attributes };
-    const attributeKeys = Object.keys(newAttrs);
-
-    while (pointsToDeduct > 0) {
-      // 找到当前值大于 0 的属性
-      const availableAttrs = attributeKeys.filter(key => newAttrs[key] > 0);
-      if (availableAttrs.length === 0) break;
-
-      // 按顺序从每个属性扣除 1 点
-      for (const key of availableAttrs) {
-        if (pointsToDeduct <= 0) break;
-        if (newAttrs[key] > 0) {
-          newAttrs[key] -= 1;
-          pointsToDeduct -= 1;
-        }
-      }
-    }
-
-    character.attributes = newAttrs;
-    if (pointDifference > allocatedPoints.value) {
-      ElMessage.warning(`企业变更导致属性点不足，已重置所有属性`);
-    } else {
-      ElMessage.warning(`企业变更导致属性点减少 ${pointDifference} 点，已从已分配属性中扣除`);
-    }
-  }
+const enterDollPrep = () => {
+  modeStore.setCharacterType("doll");
+  modeStore.setMode("doll-prep");
+  ElMessage.success("进入人形整备模式");
 };
 </script>
 
@@ -349,16 +314,20 @@ $cyber-darker: #050508;
 .character-card-container {
   min-height: 100vh;
   background-color: $cyber-darker;
-  padding-bottom: 40px;
+  padding-bottom: 100px; // 为调试栏留出空间
 }
 
-// 顶部标题栏
+// ==================== 顶部标题栏 ====================
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 30px 40px;
-  background: linear-gradient(135deg, rgba(10, 10, 15, 0.95), rgba(26, 26, 46, 0.95));
+  background: linear-gradient(
+    135deg,
+    rgba(10, 10, 15, 0.95),
+    rgba(26, 26, 46, 0.95)
+  );
   border-bottom: 2px solid $cyber-cyan;
   box-shadow: 0 4px 20px rgba(0, 243, 255, 0.15);
   position: relative;
@@ -438,161 +407,226 @@ $cyber-darker: #050508;
   }
 
   &.active {
-    background: linear-gradient(135deg, rgba(0, 243, 255, 0.3), rgba(188, 19, 254, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(0, 243, 255, 0.3),
+      rgba(188, 19, 254, 0.3)
+    );
     color: $cyber-cyan;
     font-weight: 700;
     box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.2);
   }
 }
 
-// 三栏布局
-.three-column-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
+// ==================== 模块容器（瀑布流/卡片式布局）====================
+.modules-container {
+  // 使用 CSS Columns 实现瀑布流布局
+  column-count: 3;
+  column-gap: 20px;
   padding: 30px 40px;
-  max-width: 1800px;
+  max-width: 1600px;
   margin: 0 auto;
-}
 
-.column {
-  min-width: 0;
-}
+  // 防止模块被截断
+  :deep(.module-container) {
+    break-inside: avoid;
+    margin-bottom: 20px;
+  }
 
-.form-card,
-.placeholder-card {
-  height: 100%;
-  background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(10, 10, 15, 0.95));
-  border: 1px solid rgba(0, 243, 255, 0.2);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  // 调试模式：显示所有模块
+  &.debug-mode {
+    :deep(.module-container) {
+      display: block !important;
+    }
+  }
 
-  &:hover {
-    box-shadow: 0 8px 30px rgba(0, 243, 255, 0.15);
-    border-color: rgba(0, 243, 255, 0.4);
+  // 平板：2列
+  @media (max-width: 1200px) {
+    column-count: 2;
+    padding: 20px;
+  }
+
+  // 手机：单列
+  @media (max-width: 768px) {
+    column-count: 1;
+    padding: 16px;
+  }
+
+  // ==================== 欢迎模式特殊布局 ====================
+  &.welcome-layout {
+    // 使用 Flex 布局实现居中
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+
+    // 普通模块（非功能性）
+    :deep(.module-container:not(.module-functional)) {
+      width: 400px;
+      max-width: 90%;
+      break-inside: unset; // 取消瀑布流的防截断
+    }
+
+    // 功能性模块在欢迎模式下也沉底
+    :deep(.module-functional) {
+      width: 100%;
+      max-width: 400px;
+      order: 999;
+      margin-top: 20px;
+      opacity: 0.7;
+    }
+
+    // 手机端恢复单列
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+
+      :deep(.module-container) {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+
+  // ==================== 功能性模块样式（M98、M99）====================
+  :deep(.module-functional) {
+    // 视觉上与主模块区分开（但保持实线边框）
+    opacity: 0.9;
+    border-color: rgba(0, 243, 255, 0.25);
+
+    // 悬停时恢复正常亮度和边框
+    &:hover {
+      opacity: 1;
+      border-color: rgba(0, 243, 255, 0.4);
+    }
+  }
+
+  // ==================== M97 作为分割线（占满整行，裸样式）====================
+  // 注意：M97 同时有 module-functional 和 bare 类，但 bare 优先级更高
+  :deep(.module-divider-row) {
+    // 瀑布流中占据整行
+    column-span: all;
+    width: 100%;
+
+    // 普通间距，和其他模块一样
+    margin-top: 20px;
+
+    // 强制无边框（覆盖 module-functional 的样式）
+    border: none !important;
+    background: transparent !important;
+
+    // 内容居中
+    :deep(.module-content) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }
 
-.card-header {
-  font-size: 14px;
-  font-weight: 600;
+// ==================== 调试控制栏 ====================
+.debug-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(10, 10, 15, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
+  border-top: 2px solid $cyber-cyan;
+  padding: 12px 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 -4px 20px rgba(0, 243, 255, 0.15);
+}
+
+.debug-title {
+  font-size: 12px;
   color: $cyber-cyan;
   font-family: "Courier New", "Consolas", monospace;
   letter-spacing: 2px;
 }
 
-:deep(.el-card__header) {
-  background: rgba(10, 10, 15, 0.8);
-  border-bottom-color: rgba(0, 243, 255, 0.2);
-  padding: 14px 20px;
+.debug-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
-:deep(.el-card__body) {
-  padding: 20px;
-}
-
-// 表单样式
-:deep(.el-form-item__label) {
-  color: $cyber-cyan;
-  font-family: "Courier New", "Consolas", monospace;
+.debug-btn {
+  padding: 8px 16px;
+  background: rgba(0, 243, 255, 0.1);
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 12px;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-
-:deep(.el-form-item) {
-  width: 100%;
-}
-
-:deep(.el-form-item__content) {
-  width: 100% !important;
-}
-
-// 信息图标样式
-.info-icon {
-  color: $cyber-cyan;
-  font-size: 18px;
+  font-family: "Courier New", "Consolas", monospace;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    color: rgba(0, 243, 255, 0.7);
-    transform: scale(1.1);
-  }
-}
-
-// 描述文字样式
-.description-text {
-  margin-top: 8px;
-  padding: 10px 12px;
-  width: 100%;
-  box-sizing: border-box;
-  background: rgba(0, 243, 255, 0.05);
-  border: 1px solid rgba(0, 243, 255, 0.2);
-  border-radius: 4px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-  line-height: 1.6;
-  font-family: "Microsoft YaHei", sans-serif;
-
-  &.warning-text {
-    background: rgba(255, 193, 7, 0.1);
-    border-color: rgba(255, 193, 7, 0.3);
-    color: rgba(255, 193, 7, 0.9);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-}
-
-// Popover 样式
-:deep(.el-popover) {
-  background: rgba(10, 10, 15, 0.98) !important;
-  border: 1px solid rgba(0, 243, 255, 0.3) !important;
-  box-shadow: 0 4px 20px rgba(0, 243, 255, 0.15) !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-family: "Microsoft YaHei", sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-// 输入框样式
-:deep(.el-input__wrapper) {
-  background: rgba(10, 10, 15, 0.8);
-  border: 1px solid rgba(0, 243, 255, 0.2);
-  box-shadow: none;
-
-  .el-input__inner {
-    color: #fff;
-    font-family: "Courier New", "Consolas", monospace;
-  }
-
-  &:focus-within {
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    background: rgba(0, 243, 255, 0.2);
     border-color: $cyber-cyan;
+    color: $cyber-cyan;
+  }
+
+  &.active {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 243, 255, 0.3),
+      rgba(188, 19, 254, 0.3)
+    );
+    border-color: $cyber-cyan;
+    color: $cyber-cyan;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+  }
+
+  &.debug-toggle {
+    border-color: $cyber-purple;
+    background: rgba(188, 19, 254, 0.1);
+
+    &:hover {
+      border-color: $cyber-purple;
+      color: $cyber-purple;
+    }
+
+    &.active {
+      background: linear-gradient(
+        135deg,
+        rgba(188, 19, 254, 0.3),
+        rgba(0, 243, 255, 0.3)
+      );
+      border-color: $cyber-purple;
+      color: $cyber-purple;
+    }
   }
 }
 
-.placeholder-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: rgba(0, 243, 255, 0.4);
-
-  p {
-    margin-top: 16px;
-    font-size: 13px;
-    color: rgba(192, 196, 204, 0.5);
-    font-family: "Courier New", "Consolas", monospace;
-  }
+.divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(0, 243, 255, 0.3);
+  margin: 0 8px;
 }
 
-// 响应式
+.debug-info {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: "Courier New", "Consolas", monospace;
+}
+
+// ==================== 响应式 ====================
 @media (max-width: 1200px) {
-  .three-column-layout {
+  .modules-container {
     grid-template-columns: 1fr;
     padding: 20px;
   }
@@ -622,12 +656,8 @@ $cyber-darker: #050508;
 }
 
 @media (min-width: 1201px) and (max-width: 1600px) {
-  .three-column-layout {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .column-right {
-    grid-column: span 2;
+  .modules-container {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 </style>
