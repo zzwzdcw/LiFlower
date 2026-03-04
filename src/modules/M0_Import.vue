@@ -25,6 +25,7 @@
         type="textarea"
         :rows="4"
         placeholder="请粘贴角色代码"
+        class="cyber-textarea"
       />
       <div class="import-actions">
         <el-button type="primary" @click="importCharacter">
@@ -102,6 +103,28 @@ const importCharacter = () => {
       }
 
       &:focus-within {
+        box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        border-color: #00f3ff;
+      }
+    }
+  }
+
+  // 赛博朋克风格文本框
+  :deep(.cyber-textarea) {
+    .el-textarea__inner {
+      background: rgba(10, 10, 15, 0.8);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 4px;
+      color: #fff;
+      font-family: "Courier New", "Consolas", monospace;
+      padding: 12px;
+      line-height: 1.6;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      &:focus {
         box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
         border-color: #00f3ff;
       }

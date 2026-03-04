@@ -6,11 +6,15 @@
 -->
 <template>
   <el-tooltip
-    :content="content"
     placement="top"
-    :disabled="!content"
+    :disabled="!hasContent"
     popper-class="tip-popper"
+    raw-content
   >
+    <template #content>
+      <div v-if="htmlContent" v-html="htmlContent"></div>
+      <div v-else>{{ content }}</div>
+    </template>
     <span class="tip-button" :class="`level-${level}`">
       <slot />
       <el-icon class="tip-icon"><InfoFilled /></el-icon>
@@ -19,11 +23,17 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { InfoFilled } from '@element-plus/icons-vue'
 
-defineProps({
-  // 提示内容
+const props = defineProps({
+  // 提示内容（纯文本）
   content: {
+    type: String,
+    default: ''
+  },
+  // HTML提示内容
+  htmlContent: {
     type: String,
     default: ''
   },
@@ -33,6 +43,11 @@ defineProps({
     default: 1,
     validator: (val) => [1, 2, 3].includes(val)
   }
+})
+
+// 是否有内容
+const hasContent = computed(() => {
+  return props.content || props.htmlContent
 })
 </script>
 
@@ -99,7 +114,8 @@ $cyber-purple: #bc13fe;
 // 全局样式：控制 tip 弹窗的最大宽度
 :global(.tip-popper) {
   max-width: 400px !important;
-  
+  white-space: pre-line !important;  // 支持换行符
+
   @media (max-width: 768px) {
     max-width: 280px !important;
   }
@@ -108,11 +124,17 @@ $cyber-purple: #bc13fe;
 // Element Plus tooltip 内容样式
 :global(.el-tooltip__popper) {
   &.tip-popper {
-    max-width: 400px;
-    line-height: 1.6;
-    
+    max-width: 400px !important;
+    line-height: 1.6 !important;
+    white-space: pre-line !important;
+
     @media (max-width: 768px) {
-      max-width: 280px;
+      max-width: 280px !important;
+    }
+    
+    // 确保内容区域也支持换行
+    .el-popper__content {
+      white-space: pre-line !important;
     }
   }
 }

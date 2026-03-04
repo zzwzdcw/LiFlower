@@ -2,7 +2,7 @@
   <div ref="cyberSelectRef" class="cyber-select" :class="{ open: isOpen }">
     <!-- 输入框区域 -->
     <div class="cyber-select-input" @click="toggleDropdown">
-      <span v-if="modelValue" class="selected-value">{{ modelValue }}</span>
+      <span v-if="modelValue" class="selected-value">{{ selectedLabel }}</span>
       <span v-else class="placeholder">{{ placeholder }}</span>
       <el-icon v-if="clearable && modelValue" class="clear-icon" @click.stop="clearValue">
         <CircleClose />
@@ -25,8 +25,11 @@
         v-for="item in options"
         :key="item.value"
         class="cyber-select-option"
-        :class="{ selected: item.value === modelValue }"
-        @click="selectOption(item)"
+        :class="{ 
+          selected: item.value === modelValue,
+          disabled: item.disabled 
+        }"
+        @click="!item.disabled && selectOption(item)"
       >
         <div class="option-main">{{ item.label }}</div>
         <div v-if="item.extra" class="option-sub">{{ item.extra }}</div>
@@ -36,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { ArrowDown, CircleClose } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -61,6 +64,13 @@ const isOpen = ref(false);
 const cyberSelectRef = ref(null);
 const dropdownRef = ref(null);
 const dropdownPosition = ref({});
+
+// 当前选中的标签文字
+const selectedLabel = computed(() => {
+  if (!props.modelValue) return ''
+  const selected = props.options.find(opt => opt.value === props.modelValue)
+  return selected ? selected.label : props.modelValue
+})
 
 // 更新下拉框位置
 const updateDropdownPosition = () => {
@@ -274,6 +284,30 @@ $cyber-darker: #050508;
     .option-main {
       color: $cyber-cyan;
       font-weight: 700;
+    }
+  }
+
+  // 禁用状态
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+
+    .option-main {
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: line-through;  // 删除线
+    }
+
+    .option-sub {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    &:hover {
+      background-color: transparent;
+
+      .option-main,
+      .option-sub {
+        color: rgba(255, 255, 255, 0.4);
+      }
     }
   }
 }

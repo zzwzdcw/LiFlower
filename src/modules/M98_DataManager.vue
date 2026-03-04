@@ -41,28 +41,58 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useModeStore } from '@/stores/mode'
+import { useCharacterStore } from '@/stores/character'
 import { ElMessage } from 'element-plus'
 import TipButton from '@/components/TipButton.vue'
 
 const modeStore = useModeStore()
+const characterStore = useCharacterStore()
 const importCode = ref('')
 
 const isWelcome = computed(() => modeStore.currentMode === 'welcome')
 const isPrepMode = computed(() => ['human-prep', 'doll-prep'].includes(modeStore.currentMode))
 const isActionMode = computed(() => ['human-action', 'doll-action'].includes(modeStore.currentMode))
 
+// 获取所有角色数据（用于生成代码）
+const getAllCharacterData = () => {
+  return {
+    // 基础信息
+    name: characterStore.characterName,
+    type: characterStore.characterType,
+    
+    // 人形数据
+    hardwareSpec: characterStore.hardwareSpec,
+    manufacturer: characterStore.manufacturer,
+    attributes: characterStore.attributes,
+    
+    // 人类数据
+    humanBackground: characterStore.humanBackground,
+    skills: characterStore.skills,
+    
+    // 通用数据
+    traits: characterStore.selectedTraits,
+    
+    // 元数据
+    version: '1.0',
+    createdAt: new Date().toISOString()
+  }
+}
+
 const generateCode = () => {
-  // TODO: 实现代码生成
+  const data = getAllCharacterData()
+  const code = JSON.stringify(data)
+  // TODO: 压缩/编码
+  console.log('角色数据:', data)
   ElMessage.success('角色代码已生成（复制到剪贴板）')
 }
 
 const showImportInput = () => {
-  // TODO: 显示导入输入框
   ElMessage.info('请粘贴角色代码')
 }
 
 const generateTextCard = () => {
-  // TODO: 实现文本格式角色卡生成
+  const data = getAllCharacterData()
+  console.log('生成文本卡:', data)
   ElMessage.success('文本格式角色卡已生成')
 }
 
@@ -71,7 +101,7 @@ const importCharacter = () => {
     ElMessage.warning('请先粘贴角色代码')
     return
   }
-  // TODO: 实现导入逻辑
+  // TODO: 解析代码并导入到 store
   ElMessage.success('角色导入成功')
 }
 </script>

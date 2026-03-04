@@ -49,8 +49,12 @@
         <M2_DollBasic />
       </StandardModule>
 
-      <!-- M3: 属性（人形） -->
-      <StandardModule module-id="M3" :show-in-modes="['doll-prep']">
+      <!-- M3: 属性（人形）- 仅在选择了硬件规格后显示 -->
+      <StandardModule
+        module-id="M3"
+        :show-in-modes="['doll-prep']"
+        :show-when="() => characterStore.hasHardwareSpec"
+      >
         <M3_DollAttributes />
       </StandardModule>
 
@@ -189,6 +193,7 @@
 import { computed } from "vue";
 import { ElMessage } from "element-plus";
 import { useModeStore } from "@/stores/mode";
+import { useCharacterStore } from "@/stores/character";
 import StandardModule from "@/components/StandardModule.vue";
 
 // ==================== 导入所有模块 ====================
@@ -217,6 +222,7 @@ import M99_ClearCache from "@/modules/M99_ClearCache.vue";
 
 // ==================== 初始化 ====================
 const modeStore = useModeStore();
+const characterStore = useCharacterStore();
 
 // ==================== 模式列表（用于调试栏）====================
 const modeList = [

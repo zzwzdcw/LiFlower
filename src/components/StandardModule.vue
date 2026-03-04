@@ -43,6 +43,11 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  // 额外显示条件函数（返回 true 才显示）
+  showWhen: {
+    type: Function,
+    default: null
+  },
   // 是否强制显示（覆盖模式判断，用于调试）
   forceShow: {
     type: Boolean,
@@ -67,6 +72,9 @@ const shouldShow = computed(() => {
 
   // 调试模式：显示所有模块
   if (modeStore.currentMode === 'debug') return true
+
+  // 检查额外条件（如果有）
+  if (props.showWhen && !props.showWhen()) return false
 
   // 空数组 = 所有模式都显示
   if (props.showInModes.length === 0) return true
