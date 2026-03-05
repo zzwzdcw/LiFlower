@@ -2,7 +2,7 @@
   <div ref="cyberSelectRef" class="cyber-select" :class="{ open: isOpen }">
     <!-- 输入框区域 -->
     <div class="cyber-select-input" @click="toggleDropdown">
-      <span v-if="modelValue" class="selected-value">{{ modelValue }}</span>
+      <span v-if="modelValue" class="selected-value">{{ selectedLabel }}</span>
       <span v-else class="placeholder">{{ placeholder }}</span>
       <el-icon v-if="clearable && modelValue" class="clear-icon" @click.stop="clearValue">
         <CircleClose />
@@ -25,18 +25,21 @@
         v-for="item in options"
         :key="item.value"
         class="cyber-select-option"
-        :class="{ selected: item.value === modelValue }"
-        @click="selectOption(item)"
+        :class="{ 
+          selected: item.value === modelValue,
+          disabled: item.disabled 
+        }"
+        @click="!item.disabled && selectOption(item)"
       >
-        <span class="option-label">{{ item.label }}</span>
-        <span class="option-extra">{{ item.extra }}</span>
+        <div class="option-main">{{ item.label }}</div>
+        <div v-if="item.extra" class="option-sub">{{ item.extra }}</div>
       </div>
     </div>
   </teleport>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { ArrowDown, CircleClose } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -61,6 +64,13 @@ const isOpen = ref(false);
 const cyberSelectRef = ref(null);
 const dropdownRef = ref(null);
 const dropdownPosition = ref({});
+
+// 当前选中的标签文字
+const selectedLabel = computed(() => {
+  if (!props.modelValue) return ''
+  const selected = props.options.find(opt => opt.value === props.modelValue)
+  return selected ? selected.label : props.modelValue
+})
 
 // 更新下拉框位置
 const updateDropdownPosition = () => {
@@ -235,29 +245,35 @@ $cyber-darker: #050508;
 
 .cyber-select-option {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;  // 纵向排列
+  gap: 4px;                // 两行之间的间距
   padding: 10px 14px;
   cursor: pointer;
   transition: all 0.3s ease;
 
-  .option-label {
-    color: rgba(255, 255, 255, 0.8);
+  .option-main {
+    color: rgba(255, 255, 255, 0.9);
     font-family: 'Courier New', 'Consolas', monospace;
     font-size: 14px;
+    white-space: nowrap;      // 不换行
+    overflow: hidden;         // 溢出隐藏
+    text-overflow: ellipsis;  // 显示省略号
   }
 
-  .option-extra {
+  .option-sub {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
+    font-size: 11px;
     font-family: 'Courier New', 'Consolas', monospace;
+    white-space: nowrap;      // 不换行
+    overflow: hidden;         // 溢出隐藏
+    text-overflow: ellipsis;  // 显示省略号
   }
 
   &:hover {
     background-color: rgba(0, 243, 255, 0.15);
 
-    .option-label,
-    .option-extra {
+    .option-main,
+    .option-sub {
       color: #fff;
     }
   }
@@ -265,9 +281,33 @@ $cyber-darker: #050508;
   &.selected {
     background-color: rgba(0, 243, 255, 0.1);
 
-    .option-label {
+    .option-main {
       color: $cyber-cyan;
       font-weight: 700;
+    }
+  }
+
+  // 禁用状态
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+
+    .option-main {
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: line-through;  // 删除线
+    }
+
+    .option-sub {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    &:hover {
+      background-color: transparent;
+
+      .option-main,
+      .option-sub {
+        color: rgba(255, 255, 255, 0.4);
+      }
     }
   }
 }
