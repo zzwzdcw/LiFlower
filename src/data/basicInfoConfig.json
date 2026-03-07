@@ -1,0 +1,103 @@
+{
+  "description": "M12/M13基础资料展示配置 - 定义数据项来源和展示方式",
+  "items": [
+    {
+      "id": 1,
+      "label": "",
+      "sourceModule": "M0",
+      "sourceField": "characterName",
+      "showLabel": false,
+      "showName": true,
+      "showContent": false,
+      "isTitle": true
+    },
+    {
+      "id": 2,
+      "label": "",
+      "sourceModule": "M1",
+      "sourceField": "backgroundName",
+      "contentField": "backgroundEffect",
+      "showLabel": false,
+      "showName": true,
+      "showContent": true
+    },
+    {
+      "id": 3,
+      "label": "",
+      "sourceModule": "M1",
+      "sourceField": "description",
+      "showLabel": false,
+      "showName": false,
+      "showContent": true
+    },
+    {
+      "id": 4,
+      "label": "",
+      "sourceModule": "M1",
+      "sourceField": "trait1Name",
+      "contentField": "trait1Effect",
+      "showLabel": false,
+      "showName": true,
+      "showContent": true
+    },
+    {
+      "id": 5,
+      "label": "",
+      "sourceModule": "M1",
+      "sourceField": "trait2Name",
+      "contentField": "trait2Effect",
+      "showLabel": false,
+      "showName": true,
+      "showContent": true
+    },
+    {
+      "id": 6,
+      "label": "",
+      "sourceModule": "M2",
+      "sourceField": "manufacturerName",
+      "contentField": "manufacturerEffect",
+      "showLabel": false,
+      "showName": true,
+      "showContent": true
+    },
+    {
+      "id": 7,
+      "label": "",
+      "sourceModule": "M2",
+      "sourceField": "hardwareSpecName",
+      "contentField": "hardwareSpecEffect",
+      "showLabel": false,
+      "showName": true,
+      "showContent": true
+    },
+    {
+      "id": 8,
+      "label": "",
+      "sourceModule": "M2",
+      "sourceField": "description",
+      "showLabel": false,
+      "showName": false,
+      "showContent": true
+    },
+    {
+      "id": 9,
+      "label": "",
+      "sourceModule": "M2",
+      "sourceField": "trait1Name",
+      "contentField": "trait1Effect",
+      "showLabel": false,
+      "showName": true,
+      "showContent": true
+    },
+    {
+      "id": 10,
+      "label": "",
+      "sourceModule": "M2",
+      "sourceField": "trait2Name",
+      "contentField": "trait2Effect",
+      "showLabel": false,
+      "showName": true,
+      "showContent": true
+    }
+  ]
+}

@@ -6,17 +6,18 @@
 -->
 <template>
   <div class="module-human-attributes">
-    <div class="module-header">
-      <h3 class="module-title">属性点分配</h3>
-      <span class="points-info">
-        可用属性点：<span class="points-highlight">{{ remainingPoints }}</span> / {{ totalAttributePoints }}
-      </span>
-    </div>
+    <ModuleHeader title="属性点分配" subtitle="Attributes">
+      <template #right>
+        <span class="points-info">
+          可用属性点：<span class="points-highlight">{{ remainingPoints }}</span> / {{ totalAttributePoints }}
+        </span>
+      </template>
+    </ModuleHeader>
     <!-- 属性点分配器 -->
     <AttributeAllocator
       :attribute-points="totalAttributePoints"
       :attribute-limit="attributeLimit"
-      :attributes="characterStore.attributes"
+      :attributes="characterStore.humanAttributes"
       :attribute-data="attributeData"
       :show-divider="false"
       :modifier-rules="modifierRules"
@@ -31,7 +32,9 @@ import { useCharacterStore } from '@/stores/character'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import { useModifiers } from '@/composables/useModifiers'
+import { useModeStore } from '@/stores/mode'
 import AttributeAllocator from '@/components/AttributeAllocator.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 
 // 导入属性数据
 import attributeDataJson from '@/data/基本属性.json'
@@ -40,6 +43,7 @@ import backgroundData from '@/data/人类起源.json'
 // 使用 store
 const characterStore = useCharacterStore()
 const outputsStore = useModuleOutputsStore()
+const modeStore = useModeStore()
 
 // 属性数据
 const attributeData = attributeDataJson.attributeSystem
@@ -123,7 +127,7 @@ const totalAttributePoints = computed(() => {
 
 // 计算已分配属性点
 const allocatedPoints = computed(() => {
-  return Object.values(characterStore.attributes).reduce((sum, val) => sum + val, 0)
+  return Object.values(characterStore.humanAttributes).reduce((sum, val) => sum + val, 0)
 })
 
 // 计算剩余可用属性点
@@ -132,12 +136,15 @@ const remainingPoints = computed(() => {
 })
 
 // 总消耗检查：已分配属性点超过可用上限时，清空属性点
+// 只在人类整备模式下生效
 watch([allocatedPoints, totalAttributePoints], ([allocated, available]) => {
+  if (modeStore.currentMode !== 'human-prep') return
+  
   if (allocated > available) {
     // 清空属性点选择
     characterStore.updateAttributes({
       structure: 0,
-      strength: 0,
+      torque: 0,
       athletics: 0,
       compute: 0,
       information: 0,
@@ -155,7 +162,7 @@ const handleAttributesUpdate = (newAttrs) => {
     return
   }
 
-  characterStore.updateAttributes(newAttrs)
+  characterStore.updateHumanAttributes(newAttrs)
 }
 
 // 调整值规则
@@ -178,13 +185,13 @@ const modifierRules = [
 const { getModifierFor } = useModifiers(modifierRules)
 
 // 属性键名列表
-const attributeKeys = ['structure', 'strength', 'athletics', 'compute', 'information', 'power']
+const attributeKeys = ['structure', 'torque', 'athletics', 'compute', 'information', 'power']
 
 // 计算每个属性的总值（基础值 + 调整值）
 const attributeTotals = computed(() => {
   const totals = {}
   attributeKeys.forEach(key => {
-    const baseValue = characterStore.attributes[key] || 0
+    const baseValue = characterStore.humanAttributes[key] || 0
     const modifier = getModifierFor(key)
     totals[key] = baseValue + modifier
   })
@@ -233,21 +240,6 @@ $cyber-cyan: #00f3ff;
 
 .module-human-attributes {
   width: 100%;
-
-  .module-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-    padding-bottom: 8px;
-  }
-
-  .module-title {
-    color: $cyber-cyan;
-    margin: 0;
-    font-size: 16px;
-  }
 
   .points-info {
     color: rgba(255, 255, 255, 0.8);

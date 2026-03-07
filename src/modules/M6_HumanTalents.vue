@@ -6,17 +6,18 @@
 -->
 <template>
   <div class="module-human-talents">
-    <div class="header">
-      <h3 class="module-title">专长</h3>
-      <button
-        :class="['cyber-button', { active: isCyberBrainActive }]"
-        :disabled="!canActivateCyberBrain"
-        @click="toggleCyberBrain"
-      >
-        <span class="button-icon">{{ isCyberBrainActive ? '◉' : '○' }}</span>
-        <span class="button-text">大脑电子化</span>
-      </button>
-    </div>
+    <ModuleHeader title="专长" subtitle="Talents">
+      <template #right>
+        <button
+          :class="['cyber-button', { active: isCyberBrainActive }]"
+          :disabled="!canActivateCyberBrain"
+          @click="toggleCyberBrain"
+        >
+          <span class="button-icon">{{ isCyberBrainActive ? '◉' : '○' }}</span>
+          <span class="button-text">大脑电子化</span>
+        </button>
+      </template>
+    </ModuleHeader>
 
     <!-- 专长列表 -->
     <div class="talents-list">
@@ -55,6 +56,7 @@ import { ref, computed, watch } from 'vue'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import TalentItem from '@/components/TalentItem.vue'
 import CyberBrainItem from '@/components/CyberBrainItem.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 
 // 大脑电子化状态
 const isCyberBrainActive = ref(false)
@@ -256,19 +258,6 @@ $cyber-purple: #bc13fe;
 $cyber-red: #ff5252;
 
 .module-human-talents {
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .module-title {
-    color: $cyber-cyan;
-    margin: 0;
-    font-size: 16px;
-  }
-
   // 赛博朋克风格按钮
   .cyber-button {
     display: flex;

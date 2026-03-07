@@ -13,8 +13,7 @@
           <span class="module-name">基础资料（人类）</span>
         </div>
         <div class="module-content">
-          <p>基于上方模块计算的数据展示</p>
-          <div class="placeholder-area">待实现</div>
+          <M12_HumanBasicInfo />
         </div>
       </div>
 
@@ -42,10 +41,10 @@
         </div>
       </div>
 
-      <!-- 模块18：备忘录 -->
-      <div class="module-card" data-module="M18">
+      <!-- 模块20：备忘录 -->
+      <div class="module-card" data-module="M20">
         <div class="module-header">
-          <span class="module-number">M18</span>
+          <span class="module-number">M20</span>
           <span class="module-name">备忘录</span>
         </div>
         <div class="module-content">
@@ -95,6 +94,7 @@
 
 <script setup>
 import { useModeStore } from '@/stores/mode'
+import M12_HumanBasicInfo from '@/modules/M12_HumanBasicInfo.vue'
 
 const modeStore = useModeStore()
 

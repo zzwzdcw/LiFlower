@@ -1,12 +1,12 @@
 <!--
-  模块编号：M18
+  模块编号：M20
   模块名称：备忘录
   显示模式：human-action, doll-action
   功能：玩家获取的资源等跑团记录
 -->
 <template>
-  <div class="module-m18">
-    <h3>M18: 备忘录</h3>
+  <div class="module-m20">
+    <ModuleHeader title="备忘录" subtitle="Memo" />
     <p>玩家获取的资源等跑团记录</p>
     <div class="memo-content">
       <el-input
@@ -21,23 +21,19 @@
 
 <script setup>
 import { ref } from 'vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 
 const memo = ref('')
 </script>
 
 <style lang="scss" scoped>
-.module-m18 {
-  h3 {
-    color: #00f3ff;
-    margin: 0 0 12px 0;
-  }
-  
+.module-m20 {
   p {
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
     margin: 0 0 16px 0;
   }
-  
+
   .memo-content {
     :deep(.el-textarea__inner) {
       background: rgba(10, 10, 15, 0.8);

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   模块编号：M1
   模块名称：人类车卡-基础信息
   显示模式：human-prep
@@ -68,11 +68,11 @@
                 <!-- 自由特质：显示自定义输入框 -->
                 <div v-if="isCustomTrait(trait.id)" class="custom-trait-input">
                   <el-input
-                    v-model="trait.customText"
+                    v-model="trait.customEffect"
                     type="textarea"
-                    :rows="3"
-                    placeholder="请描述你的自定义特质..."
-                    class="cyber-textarea"
+                    :rows="2"
+                    placeholder="请输入自定义特质效果..."
+                    class="cyber-input-long"
                   />
                 </div>
                 <!-- 普通特质：显示效果描述 -->
@@ -107,8 +107,8 @@ const characterStore = useCharacterStore()
 const localData = reactive({
   description: "",
   traits: [
-    { id: "", description: "", effect: "", customText: "" },
-    { id: "", description: "", effect: "", customText: "" }
+    { id: "", description: "", effect: "", customEffect: "" },
+    { id: "", description: "", effect: "", customEffect: "" }
   ]
 })
 
@@ -135,22 +135,31 @@ const backgroundOutput = computed(() => {
 // [1,2] 和 [2,1] 都会输出为 traits=1,2
 // 自由特质会包含自定义文本
 const traitsOutput = computed(() => {
-  // 收集所有特质信息（包括ID和自定义文本）
+  // 收集所有特质信息（包括 ID、名称和效果）
   const traitInfos = localData.traits
     .filter(t => t.id !== '')
     .map(t => {
       if (isCustomTrait(t.id)) {
-        // 自由特质：包含ID和自定义文本
+        // 自由特质：名称为"自由特质"，效果为玩家输入的文本
         return {
           id: t.id,
-          custom: t.customText || ''
+          name: '自由特质',
+          effect: t.customEffect || '',
+          custom: t.customEffect || ''
         }
       }
-      return { id: t.id, custom: '' }
+      // 普通特质：从数据文件获取名称和效果
+      const traitData = traitsData.find(item => item.id.toString() === t.id)
+      return {
+        id: t.id,
+        name: traitData ? traitData.name : '',
+        effect: traitData ? traitData.effect : '',
+        custom: ''
+      }
     })
     .sort((a, b) => parseInt(a.id) - parseInt(b.id))
 
-  // 构建traits字符串（ID用逗号分隔，自由特质用|追加文本）
+  // 构建 traits 字符串（ID 用逗号分隔，自由特质用 | 追加文本）
   const traitStrs = traitInfos.map(t => {
     if (t.custom) {
       return `${t.id}|${t.custom}`
@@ -158,15 +167,17 @@ const traitsOutput = computed(() => {
     return t.id
   })
 
-  // 单独收集自由特质文本用于显示
-  const customTexts = traitInfos
-    .filter(t => t.custom)
-    .map(t => t.custom)
+  // 获取特质 1 和特质 2 的详细信息
+  const trait1 = traitInfos[0] || { name: '', effect: '' }
+  const trait2 = traitInfos[1] || { name: '', effect: '' }
 
   return {
     traits: traitStrs.join(',') || '',
     traitCount: traitInfos.length,
-    customTraitTexts: customTexts
+    trait1Name: trait1.name,
+    trait1Effect: trait1.effect,
+    trait2Name: trait2.name,
+    trait2Effect: trait2.effect
   }
 })
 
@@ -178,10 +189,14 @@ const descriptionOutput = computed(() => ({
 useAutoOutput({
   background: computed(() => backgroundOutput.value.background),
   backgroundName: computed(() => backgroundOutput.value.backgroundName),
+  backgroundEffect: computed(() => backgroundOutput.value.backgroundEffect),
   traits: computed(() => traitsOutput.value.traits),
   traitCount: computed(() => traitsOutput.value.traitCount),
-  customTraitTexts: computed(() => traitsOutput.value.customTraitTexts.join(';;')),
-  description: computed(() => descriptionOutput.value.description)
+  description: computed(() => descriptionOutput.value.description),
+  trait1Name: computed(() => traitsOutput.value.trait1Name),
+  trait1Effect: computed(() => traitsOutput.value.trait1Effect),
+  trait2Name: computed(() => traitsOutput.value.trait2Name),
+  trait2Effect: computed(() => traitsOutput.value.trait2Effect)
 })
 
 // 出身选择
@@ -247,7 +262,7 @@ localData.traits.forEach((trait, index) => {
       // 普通特质：更新描述和效果，清空自定义文本
       trait.description = getTraitDescription(newId)
       trait.effect = getTraitEffect(newId)
-      trait.customText = ''
+      trait.customEffect = ''
     }
     // 同步到 store
     characterStore.setTrait(index, newId)

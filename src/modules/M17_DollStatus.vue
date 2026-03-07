@@ -6,29 +6,24 @@
 -->
 <template>
   <div class="module-m17">
-    <h3>M17: 角色状态（人形）</h3>
+    <ModuleHeader title="角色状态" subtitle="Status" />
     <p>包括HP等基于上方模块进行计算的模块，也包含玩家跑团中填写的东西</p>
     <div class="placeholder">待实现</div>
   </div>
 </template>
 
 <script setup>
-// 角色状态逻辑（HP等）
+import ModuleHeader from '@/components/ModuleHeader.vue'
 </script>
 
 <style lang="scss" scoped>
 .module-m17 {
-  h3 {
-    color: #00f3ff;
-    margin: 0 0 12px 0;
-  }
-  
   p {
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
     margin: 0 0 16px 0;
   }
-  
+
   .placeholder {
     padding: 40px;
     background: rgba(0, 0, 0, 0.3);

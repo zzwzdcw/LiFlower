@@ -84,19 +84,9 @@
         <M7_Equipment />
       </StandardModule>
 
-      <!-- M8: 装备（人类） -->
-      <StandardModule module-id="M8" :show-in-modes="['human-prep']">
-        <M8_HumanGear />
-      </StandardModule>
-
       <!-- M9: 尖端武装（人形） -->
       <StandardModule module-id="M9" :show-in-modes="['doll-prep']">
         <M9_DollWeapon />
-      </StandardModule>
-
-      <!-- M10: 装备（人形） -->
-      <StandardModule module-id="M10" :show-in-modes="['doll-prep']">
-        <M10_DollGear />
       </StandardModule>
 
       <!-- M11: 预留模块（仅调试模式显示） -->
@@ -134,9 +124,19 @@
         <M17_DollStatus />
       </StandardModule>
 
-      <!-- M18: 备忘录 -->
-      <StandardModule module-id="M18" :show-in-modes="['human-action', 'doll-action']">
-        <M18_Memo />
+      <!-- M18: 装备（人类） -->
+      <StandardModule module-id="M18" :show-in-modes="['human-prep', 'human-action']">
+        <M18_HumanGear />
+      </StandardModule>
+
+      <!-- M19: 装备（人形） -->
+      <StandardModule module-id="M19" :show-in-modes="['doll-prep', 'doll-action']">
+        <M19_DollGear />
+      </StandardModule>
+
+      <!-- M20: 备忘录 -->
+      <StandardModule module-id="M20" :show-in-modes="['human-action', 'doll-action']">
+        <M20_Memo />
       </StandardModule>
 
       <!-- M97: 转换按钮（作为分割线，占满整行，裸样式） -->
@@ -211,9 +211,7 @@ import M4_HumanAttributes from "@/modules/M4_HumanAttributes.vue";
 import M5_HumanSkills from "@/modules/M5_HumanSkills.vue";
 import M6_HumanTalents from "@/modules/M6_HumanTalents.vue";
 import M7_Equipment from "@/modules/M7_Equipment.vue";
-import M8_HumanGear from "@/modules/M8_HumanGear.vue";
 import M9_DollWeapon from "@/modules/M9_DollWeapon.vue";
-import M10_DollGear from "@/modules/M10_DollGear.vue";
 import M11_Empty from "@/modules/M11_Empty.vue";
 import M12_HumanBasicInfo from "@/modules/M12_HumanBasicInfo.vue";
 import M13_DollBasicInfo from "@/modules/M13_DollBasicInfo.vue";
@@ -221,7 +219,9 @@ import M14_HumanCheck from "@/modules/M14_HumanCheck.vue";
 import M15_DollCheck from "@/modules/M15_DollCheck.vue";
 import M16_HumanStatus from "@/modules/M16_HumanStatus.vue";
 import M17_DollStatus from "@/modules/M17_DollStatus.vue";
-import M18_Memo from "@/modules/M18_Memo.vue";
+import M18_HumanGear from "@/modules/M18_HumanGear.vue";
+import M19_DollGear from "@/modules/M19_DollGear.vue";
+import M20_Memo from "@/modules/M20_Memo.vue";
 import M97_Switch from "@/modules/M97_Switch.vue";
 import M98_DataManager from "@/modules/M98_DataManager.vue";
 import M99_ClearCache from "@/modules/M99_ClearCache.vue";

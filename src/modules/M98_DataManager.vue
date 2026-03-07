@@ -6,8 +6,8 @@
 -->
 <template>
   <div class="module-m98">
-    <h3>M98: 数据管理</h3>
-    
+    <ModuleHeader title="数据管理" subtitle="Data Manager" />
+
     <!-- 代码导入区（欢迎模式显示） -->
     <div v-if="isWelcome" class="import-section">
       <h4>导入角色</h4>
@@ -44,6 +44,7 @@ import { useModeStore } from '@/stores/mode'
 import { useCharacterStore } from '@/stores/character'
 import { ElMessage } from 'element-plus'
 import TipButton from '@/components/TipButton.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 
 const modeStore = useModeStore()
 const characterStore = useCharacterStore()
@@ -63,11 +64,12 @@ const getAllCharacterData = () => {
     // 人形数据
     hardwareSpec: characterStore.hardwareSpec,
     manufacturer: characterStore.manufacturer,
-    attributes: characterStore.attributes,
-    
+    dollAttributes: characterStore.dollAttributes,
+
     // 人类数据
     humanBackground: characterStore.humanBackground,
     skills: characterStore.skills,
+    humanAttributes: characterStore.humanAttributes,
     
     // 通用数据
     traits: characterStore.selectedTraits,
@@ -110,11 +112,6 @@ const importCharacter = () => {
 $cyber-cyan: #00f3ff;
 
 .module-m98 {
-  h3 {
-    color: $cyber-cyan;
-    margin: 0 0 16px 0;
-  }
-  
   h4 {
     color: rgba(255, 255, 255, 0.8);
     margin: 0 0 12px 0;

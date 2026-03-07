@@ -17,7 +17,7 @@
     </template>
     <span class="tip-button" :class="`level-${level}`">
       <slot />
-      <el-icon class="tip-icon"><InfoFilled /></el-icon>
+      <el-icon v-if="showIcon" class="tip-icon"><InfoFilled /></el-icon>
     </span>
   </el-tooltip>
 </template>
@@ -42,6 +42,11 @@ const props = defineProps({
     type: Number,
     default: 1,
     validator: (val) => [1, 2, 3].includes(val)
+  },
+  // 是否显示图标
+  showIcon: {
+    type: Boolean,
+    default: true
   }
 })
 

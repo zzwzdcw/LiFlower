@@ -7,19 +7,20 @@
 -->
 <template>
   <div class="module-doll-attributes">
-    <div class="module-header">
-      <h3 class="module-title">属性点分配</h3>
-      <span class="points-info">可用属性点：<span class="points-highlight">{{ remainingPoints }}</span> / {{ characterStore.totalAttributePoints }}</span>
-    </div>
+    <ModuleHeader title="属性点分配" subtitle="Attributes">
+      <template #right>
+        <span class="points-info">可用属性点：<span class="points-highlight">{{ remainingPoints }}</span> / {{ characterStore.totalAttributePoints }}</span>
+      </template>
+    </ModuleHeader>
     <!-- 属性点分配器 -->
     <AttributeAllocator
       :attribute-points="characterStore.totalAttributePoints"
       :attribute-limit="characterStore.attributeLimit"
-      :attributes="characterStore.attributes"
+      :attributes="characterStore.dollAttributes"
       :attribute-data="attributeData"
       :show-divider="false"
       :modifier-rules="modifierRules"
-      @update:attributes="characterStore.updateAttributes"
+      @update:attributes="characterStore.updateDollAttributes"
     />
   </div>
 </template>
@@ -30,6 +31,7 @@ import { useCharacterStore } from '@/stores/character'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import { useModifiers } from '@/composables/useModifiers'
 import AttributeAllocator from '@/components/AttributeAllocator.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 
 // 导入属性数据
 import attributeDataJson from '@/data/基本属性.json'
@@ -42,7 +44,7 @@ const attributeData = attributeDataJson.attributeSystem
 
 // 计算已分配属性点
 const allocatedPoints = computed(() => {
-  return Object.values(characterStore.attributes).reduce((sum, val) => sum + val, 0)
+  return Object.values(characterStore.dollAttributes).reduce((sum, val) => sum + val, 0)
 })
 
 // 计算剩余可用属性点
@@ -65,13 +67,13 @@ const modifierRules = [
 const { getModifierFor } = useModifiers(modifierRules)
 
 // 属性键名列表
-const attributeKeys = ['structure', 'strength', 'athletics', 'compute', 'information', 'power']
+const attributeKeys = ['structure', 'torque', 'athletics', 'compute', 'information', 'power']
 
 // 计算每个属性的总值（基础值 + 调整值）
 const attributeTotals = computed(() => {
   const totals = {}
   attributeKeys.forEach(key => {
-    const baseValue = characterStore.attributes[key] || 0
+    const baseValue = characterStore.dollAttributes[key] || 0
     const modifier = getModifierFor(key)
     totals[key] = baseValue + modifier
   })
@@ -99,21 +101,6 @@ $cyber-cyan: #00f3ff;
 
 .module-doll-attributes {
   width: 100%;
-
-  .module-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-    padding-bottom: 8px;
-  }
-
-  .module-title {
-    color: $cyber-cyan;
-    margin: 0;
-    font-size: 16px;
-  }
 
   .points-info {
     color: rgba(255, 255, 255, 0.8);

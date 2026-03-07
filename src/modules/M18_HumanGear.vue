@@ -1,11 +1,11 @@
 <!--
-  模块编号：M8
+  模块编号：M18
   模块名称：装备（人类）
   显示模式：human-prep, human-action
 -->
 <template>
-  <div class="module-m8">
-    <h3 class="module-title">装备（人类）</h3>
+  <div class="module-m18">
+    <ModuleHeader title="装备" subtitle="Equipment" />
     <div class="placeholder">
       <p>装备槽位（默认2个，可添加至8个）</p>
       <ul>
@@ -17,14 +17,13 @@
   </div>
 </template>
 
+<script setup>
+import ModuleHeader from '@/components/ModuleHeader.vue'
+</script>
+
 <style scoped>
-.module-m8 {
+.module-m18 {
   padding: 16px;
-}
-.module-title {
-  color: #00f3ff;
-  margin: 0 0 16px 0;
-  font-family: "Courier New", monospace;
 }
 .placeholder {
   color: rgba(255, 255, 255, 0.5);

@@ -6,7 +6,7 @@
 -->
 <template>
   <div class="module-m99">
-    <h3>M99: 系统设置</h3>
+    <ModuleHeader title="系统设置" subtitle="Settings" />
     <div class="warning-section">
       <p class="warning-text">⚠️ 警告：此操作将删除所有本地保存的角色数据，不可恢复！</p>
       <el-button type="danger" plain @click="confirmClear">清除浏览器缓存</el-button>
@@ -16,6 +16,7 @@
 
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 
 const confirmClear = () => {
   ElMessageBox.confirm(
@@ -42,11 +43,6 @@ const confirmClear = () => {
 $cyber-cyan: #00f3ff;
 
 .module-m99 {
-  h3 {
-    color: $cyber-cyan;
-    margin: 0 0 16px 0;
-  }
-  
   .warning-section {
     background: rgba(255, 82, 82, 0.1);
     border: 1px solid rgba(255, 82, 82, 0.3);

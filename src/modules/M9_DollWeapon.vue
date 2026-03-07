@@ -6,10 +6,11 @@
 -->
 <template>
   <div class="module-advanced-weapon">
-    <div class="header">
-      <h3 class="module-title">尖端武装</h3>
-      <span class="weapon-count">默认1部</span>
-    </div>
+    <ModuleHeader title="尖端武装" subtitle="Advanced Weapon">
+      <template #right>
+        <span class="weapon-count">默认1部</span>
+      </template>
+    </ModuleHeader>
 
     <!-- 尖端武装配置 -->
     <div class="weapon-config">
@@ -53,6 +54,7 @@ import { ref, computed } from 'vue'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import DotGridAllocator from '@/components/DotGridAllocator.vue'
 import WeaponTagSelector from '@/components/WeaponTagSelector.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 
 // 武器数据
 const weaponName = ref('')
@@ -77,19 +79,6 @@ useAutoOutput({
 $cyber-cyan: #00f3ff;
 
 .module-advanced-weapon {
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .module-title {
-    color: $cyber-cyan;
-    margin: 0;
-    font-size: 16px;
-  }
-
   .weapon-count {
     color: rgba(255, 255, 255, 0.5);
     font-size: 12px;

@@ -1,20 +1,21 @@
 <!--
   模块编号：M7
-  模块名称：装备（人形）
+  模块名称：芯片（人形）
   显示模式：doll-prep
   功能：芯片槽位管理（支持专利芯片与协调芯片规则）
 -->
 <template>
   <div class="module-equipment">
-    <div class="header">
-      <h3 class="module-title">装备</h3>
-      <span class="slot-info">
-        芯片槽位：<span class="slot-count">{{ usedSlots }}/{{ maxSlots }}</span>
-        <span v-if="patentCount > 0" class="patent-info">
-          (专利{{ patentCount }}个<span v-if="coordinationCount > 0">，协调{{ coordinationCount }}个</span>)
+    <ModuleHeader title="芯片" subtitle="Chips">
+      <template #right>
+        <span class="slot-info">
+          芯片槽位：<span class="slot-count">{{ usedSlots }}/{{ maxSlots }}</span>
+          <span v-if="patentCount > 0" class="patent-info">
+            (专利{{ patentCount }}个<span v-if="coordinationCount > 0">，协调{{ coordinationCount }}个</span>)
+          </span>
         </span>
-      </span>
-    </div>
+      </template>
+    </ModuleHeader>
 
     <!-- 芯片槽位列表 -->
     <div class="chip-slots-list">
@@ -45,6 +46,7 @@ import { ref, computed, watch } from 'vue'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import ChipSlot from '@/components/ChipSlot.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 import patentChipsData from '@/data/patentChips.json'
 
 const outputsStore = useModuleOutputsStore()
@@ -71,7 +73,7 @@ const chipSlots = ref(
 // 读取M2选择的人形企业ID
 const selectedManufacturerId = computed(() => {
   const m2Output = outputsStore.getModuleOutput('M2')
-  return m2Output?.manufacturer || null
+  return m2Output?.manufacturerId || null
 })
 
 // 统计专利芯片数量
@@ -255,19 +257,6 @@ useAutoOutput({
 $cyber-cyan: #00f3ff;
 
 .module-equipment {
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .module-title {
-    color: $cyber-cyan;
-    margin: 0;
-    font-size: 16px;
-  }
-
   .slot-info {
     color: rgba(255, 255, 255, 0.7);
     font-size: 13px;

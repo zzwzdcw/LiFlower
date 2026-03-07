@@ -54,10 +54,10 @@
         </div>
       </div>
 
-      <!-- 模块10：装备（人形） -->
-      <div class="module-card" data-module="M10">
+      <!-- 模块19：装备（人形） -->
+      <div class="module-card" data-module="M19">
         <div class="module-header">
-          <span class="module-number">M10</span>
+          <span class="module-number">M19</span>
           <span class="module-name">人形装备</span>
         </div>
         <div class="module-content">

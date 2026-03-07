@@ -1,13 +1,13 @@
 <!--
   模块编号：M2
-  模块名称：人形车卡-基础信息
+  模块名称：人形车卡 - 基础信息
   显示模式：doll-prep
   功能：生产企业、硬件规格、角色阐述、特质槽位
 -->
 <template>
   <div class="module-doll-basic">
-    <h3 class="module-title">人形基础信息</h3>
-    
+    <ModuleHeader title="基础信息" subtitle="Basic Information" />
+
     <el-form label-position="top">
       <!-- 角色名称（与 M0 同步） -->
       <el-form-item>
@@ -30,7 +30,9 @@
             @change="onEnterpriseChange"
             style="flex: 1"
           />
-          <TipButton level="2" :content="currentManufacturerDesc" />
+          <TipButton level="3" :content="currentEnterpriseFullDesc">
+            企业说明
+          </TipButton>
         </div>
         <!-- 效果说明文字（样式优化） -->
         <div v-if="currentManufacturerEffectDesc && currentManufacturerEffectDesc.length > 0" class="effect-text">
@@ -48,10 +50,13 @@
             v-model="characterStore.hardwareSpec"
             placeholder="请选择硬件规格"
             :options="hardwareSpecOptions"
+            :clearable="true"
             @change="onHardwareChange"
             style="flex: 1"
           />
-          <TipButton level="2" :content="currentHardwareFullDesc" />
+          <TipButton level="3" :content="currentHardwareFullDesc">
+            规格说明
+          </TipButton>
         </div>
         <!-- 效果说明文字（样式优化） -->
         <div v-if="currentHardwareEffectDesc && currentHardwareEffectDesc.length > 0" class="effect-text">
@@ -75,9 +80,9 @@
 
             <!-- 特质槽位 -->
             <div class="traits-section">
-              <div 
-                class="trait-item" 
-                v-for="(trait, index) in localData.traits" 
+              <div
+                class="trait-item"
+                v-for="(trait, index) in localData.traits"
                 :key="index"
               >
                 <div class="trait-slot">
@@ -90,8 +95,18 @@
                   />
                   <TipButton level="1" :content="trait.description" />
                 </div>
-                <!-- 特质效果描述 -->
-                <div v-if="trait.effect" class="effect-text trait-effect">
+                <!-- 自由特质：显示自定义输入框 -->
+                <div v-if="isCustomTrait(trait.id)" class="custom-trait-input">
+                  <el-input
+                    v-model="trait.customEffect"
+                    type="textarea"
+                    :rows="2"
+                    placeholder="请输入自定义特质效果..."
+                    class="cyber-input-long"
+                  />
+                </div>
+                <!-- 普通特质：显示效果描述 -->
+                <div v-else-if="trait.effect" class="effect-text trait-effect">
                   {{ trait.effect }}
                 </div>
               </div>
@@ -109,6 +124,7 @@ import { ElMessage } from 'element-plus'
 import CyberSelect from "@/components/CyberSelect.vue"
 import AttributeAllocator from "@/components/AttributeAllocator.vue"
 import TipButton from "@/components/TipButton.vue"
+import ModuleHeader from "@/components/ModuleHeader.vue"
 import { useCharacterStore } from "@/stores/character"
 import { useAutoOutput } from "@/composables/useModuleOutput"
 
@@ -125,8 +141,8 @@ const characterStore = useCharacterStore()
 const localData = reactive({
   description: "",
   traits: [
-    { id: "", description: "", effect: "" },
-    { id: "", description: "", effect: "" }
+    { id: "", description: "", effect: "", customEffect: "" },
+    { id: "", description: "", effect: "", customEffect: "" }
   ]
 })
 
@@ -135,7 +151,7 @@ const hardwareSpecList = hardwareSpecData
 const manufacturerList = manufacturerData
 const attributeData = attributeDataJson.attributeSystem
 
-// 获取当前企业可生产的规格列表
+// 获取当前企业可生产的规格列表（使用 ID 匹配）
 const currentManufacturerProducedSpecs = computed(() => {
   if (!characterStore.manufacturer) return null // 未选择企业，所有规格可用
   const manufacturer = manufacturerList.find(m => m.nameZh === characterStore.manufacturer)
@@ -146,10 +162,10 @@ const currentManufacturerProducedSpecs = computed(() => {
 const hardwareSpecOptions = computed(() => {
   const producedSpecs = currentManufacturerProducedSpecs.value
   return hardwareSpecList.map((item) => ({
-    label: item.name,
+    label: item.name + '级',
     value: item.name,
     extra: `属性点:${item.effect.attributePointsBonus} | 上限:${item.effect.attributePointsBonus}`,
-    disabled: producedSpecs ? !producedSpecs.includes(item.name) : false
+    disabled: producedSpecs ? !producedSpecs.includes(item.id) : false
   }))
 })
 
@@ -167,6 +183,13 @@ const currentHardwareFullDesc = computed(() => {
   return selected ? selected.description || "" : ""
 })
 
+// 当前企业的详细描述（用于 tip）
+const currentEnterpriseFullDesc = computed(() => {
+  if (!characterStore.manufacturer) return ""
+  const selected = manufacturerList.find((item) => item.nameZh === characterStore.manufacturer)
+  return selected ? selected.description || "" : ""
+})
+
 // 当前硬件规格的效果描述（用于下方说明文字）
 const currentHardwareEffectDesc = computed(() => {
   if (!characterStore.hardwareSpec) return []
@@ -174,21 +197,18 @@ const currentHardwareEffectDesc = computed(() => {
   return selected ? selected.effectDescription || [] : []
 })
 
-// 当前企业的详细描述（用于 tip）
-const currentManufacturerDesc = computed(() => {
-  if (!characterStore.manufacturer) return ""
-  const selected = manufacturerList.find((item) => item.nameZh === characterStore.manufacturer)
-  return selected ? selected.description || "" : ""
-})
-
 // 当前企业的效果描述（用于下方说明文字）
 const currentManufacturerEffectDesc = computed(() => {
   if (!characterStore.manufacturer) return []
   const selected = manufacturerList.find((item) => item.nameZh === characterStore.manufacturer)
-  return selected ? selected.effectDescription || [] : []
+  if (!selected || !selected.effect) return []
+
+  const effectText = selected.effect.effectText || ''
+  // 将 effectText 按分号分割为数组
+  return effectText.split(';').map(s => s.trim()).filter(s => s)
 })
 
-// 可用特质列表（人形显示doll+both，人类显示human+both）
+// 可用特质列表（人形显示 doll+both，人类显示 human+both）
 const availableTraits = computed(() => {
   return traitsData
     .filter(t => t.type === 'doll' || t.type === 'both')
@@ -198,18 +218,23 @@ const availableTraits = computed(() => {
     }))
 })
 
-// 根据特质ID获取描述
+// 根据特质 ID 获取描述
 const getTraitDescription = (traitId) => {
   if (!traitId) return ''
   const trait = traitsData.find(t => t.id.toString() === traitId)
   return trait ? trait.description : ''
 }
 
-// 根据特质ID获取效果
+// 根据特质 ID 获取效果
 const getTraitEffect = (traitId) => {
   if (!traitId) return ''
   const trait = traitsData.find(t => t.id.toString() === traitId)
   return trait ? trait.effect : ''
+}
+
+// 判断是否为自由特质（ID 为 0）
+const isCustomTrait = (traitId) => {
+  return traitId === '0' || traitId === 0
 }
 
 // 监听特质选择变化，更新描述和效果，并同步到 store
@@ -217,6 +242,11 @@ localData.traits.forEach((trait, index) => {
   watch(() => trait.id, (newId) => {
     trait.description = getTraitDescription(newId)
     trait.effect = getTraitEffect(newId)
+    // 如果是自由特质，清空效果，使用自定义输入
+    if (isCustomTrait(newId)) {
+      trait.effect = ''
+      trait.customEffect = ''
+    }
     // 同步到 store（人形和人类共用 selectedTraits）
     characterStore.setTrait(index, newId)
   })
@@ -241,7 +271,7 @@ const onEnterpriseChange = (value) => {
     if (selected) {
       const bonus = selected.effect?.attributePointsBonus || 0
       characterStore.setManufacturer(value, bonus)
-      
+
       // 检查当前选择的规格是否在新企业的生产范围内
       if (characterStore.hardwareSpec && !selected.producedSpecs.includes(characterStore.hardwareSpec)) {
         // 重置硬件规格选择
@@ -255,32 +285,85 @@ const onEnterpriseChange = (value) => {
 }
 
 // ==================== 数据输出 ====================
-// 获取企业ID
+// 获取企业 ID
 const manufacturerId = computed(() => {
   if (!characterStore.manufacturer) return null
   const selected = manufacturerList.find((item) => item.nameZh === characterStore.manufacturer)
   return selected?.id || null
 })
 
-// 获取硬件规格ID
+// 获取硬件规格 ID
 const hardwareSpecId = computed(() => {
   if (!characterStore.hardwareSpec) return null
   const selected = hardwareSpecList.find((item) => item.name === characterStore.hardwareSpec)
   return selected?.id || null
 })
 
-// 获取选中的特质ID列表（无顺序，过滤空值）
-const selectedTraitIds = computed(() => {
-  return localData.traits
-    .map(t => t.id)
-    .filter(id => id) // 过滤掉空值
+// 生产企业名称
+const manufacturerName = computed(() => characterStore.manufacturer || '')
+
+// 生产企业效果描述
+const manufacturerEffect = computed(() => {
+  if (!characterStore.manufacturer) return ''
+  const selected = manufacturerList.find((item) => item.nameZh === characterStore.manufacturer)
+  if (!selected || !selected.effect) return ''
+  return selected.effect.effectText || ''
+})
+
+// 硬件规格名称
+const hardwareSpecName = computed(() => characterStore.hardwareSpec || '')
+
+// 硬件规格效果描述（将数组拼接为字符串）
+const hardwareSpecEffect = computed(() => {
+  if (!characterStore.hardwareSpec) return ''
+  const selected = hardwareSpecList.find((item) => item.name === characterStore.hardwareSpec)
+  if (!selected) return ''
+  const effects = selected.effectDescription || []
+  return effects.join('；')
+})
+
+// 特质输出（排序后，消除顺序差异）
+const traitsOutput = computed(() => {
+  // 收集所有特质信息（包括自定义效果）
+  const traitInfos = localData.traits
+    .filter(t => t.id !== '')
+    .map(t => {
+      const traitData = traitsData.find(item => item.id.toString() === t.id)
+      // 如果是自由特质（ID=0），使用自定义输入的效果
+      const isCustom = (t.id === '0' || t.id === 0)
+      return {
+        id: t.id,
+        name: traitData ? traitData.name : '',
+        effect: isCustom ? (t.customEffect || '自定义特质效果') : (traitData ? traitData.effect : '')
+      }
+    })
+    .sort((a, b) => parseInt(a.id) - parseInt(b.id))
+
+  // 获取特质 1 和特质 2 的详细信息
+  const trait1 = traitInfos[0] || { name: '', effect: '' }
+  const trait2 = traitInfos[1] || { name: '', effect: '' }
+
+  return {
+    trait1Name: trait1.name,
+    trait1Effect: trait1.effect,
+    trait2Name: trait2.name,
+    trait2Effect: trait2.effect
+  }
 })
 
 useAutoOutput({
   manufacturerId,
   hardwareSpecId,
   description: computed(() => localData.description),
-  traitIds: selectedTraitIds
+  traitIds: computed(() => localData.traits.map(t => t.id).filter(id => id)),
+  manufacturerName,
+  manufacturerEffect,
+  hardwareSpecName,
+  hardwareSpecEffect,
+  trait1Name: computed(() => traitsOutput.value.trait1Name),
+  trait1Effect: computed(() => traitsOutput.value.trait1Effect),
+  trait2Name: computed(() => traitsOutput.value.trait2Name),
+  trait2Effect: computed(() => traitsOutput.value.trait2Effect)
 })
 </script>
 
@@ -291,14 +374,6 @@ $cyber-cyan: #00f3ff;
 $cyber-purple: #bc13fe;
 
 .module-doll-basic {
-  .module-title {
-    color: $cyber-cyan;
-    margin-bottom: 20px;
-    font-size: 18px;
-    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-    padding-bottom: 10px;
-  }
-
   .form-row {
     display: flex;
     align-items: center;
@@ -326,36 +401,61 @@ $cyber-purple: #bc13fe;
 
   // 效果说明文字（使用全局样式）
   .effect-text {
-    @extend .cyber-effect-text;
-  }
+    margin-top: 8px;
+    color: rgba(0, 243, 255, 0.8);
+    font-size: 13px;
+    font-style: italic;
+    border-left: 3px solid rgba(0, 243, 255, 0.3);
+    padding-left: 12px;
+    line-height: 1.6;
 
-  // 效果列表样式（无任何符号）
-  .effect-list {
-    margin: 0;
-    padding-left: 0;
-    list-style-type: none;
+    .effect-list {
+      margin: 0;
+      padding-left: 20px;
 
-    li {
-      margin-bottom: 6px;
-      
-      &:last-child {
-        margin-bottom: 0;
+      li {
+        margin: 4px 0;
       }
+    }
+
+    &.trait-effect {
+      border-left: none;
+      padding-left: 0;
+      margin-left: 68px;
+      margin-top: 4px;
     }
   }
 
-  // 角色阐述区域宽度修复
+  // 角色阐述区域
   .character-desc-item {
     :deep(.el-form-item__content) {
       width: 100%;
     }
   }
 
-  // 折叠面板宽度修复
   .character-collapse {
     width: 100%;
+
+    :deep(.el-collapse-item__header) {
+      background: rgba(0, 243, 255, 0.05);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 4px;
+      padding: 0 16px;
+      color: $cyber-cyan;
+      font-size: 14px;
+    }
+
+    :deep(.el-collapse-item__wrap) {
+      background: transparent;
+      border: none;
+    }
+
+    :deep(.el-collapse-item__content) {
+      padding: 16px 0 0 0;
+    }
   }
 
+  // 特质槽位样式
   .traits-section {
     margin-top: 16px;
     display: flex;
@@ -384,12 +484,12 @@ $cyber-purple: #bc13fe;
       }
     }
 
-    .trait-effect {
+    // 自定义特质输入框
+    .custom-trait-input {
       margin-left: 68px;
-      margin-top: 4px;
+      margin-top: 8px;
     }
   }
-
 }
 
 :deep(.el-collapse) {
@@ -416,4 +516,3 @@ $cyber-purple: #bc13fe;
   }
 }
 </style>
-

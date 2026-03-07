@@ -49,11 +49,23 @@ export const useCharacterStore = defineStore('character', () => {
   const attributeLimit = ref(5)
 
   /**
-   * 当前属性值（人形）
+   * 当前属性值（人形）- M3 使用
    */
-  const attributes = ref({
+  const dollAttributes = ref({
     structure: 0,
-    strength: 0,
+    torque: 0,
+    athletics: 0,
+    compute: 0,
+    information: 0,
+    power: 0
+  })
+
+  /**
+   * 当前属性值（人类）- M4 使用
+   */
+  const humanAttributes = ref({
+    structure: 0,
+    torque: 0,
     athletics: 0,
     compute: 0,
     information: 0,
@@ -98,16 +110,28 @@ export const useCharacterStore = defineStore('character', () => {
   const hasHardwareSpec = computed(() => hardwareSpec.value !== '')
 
   /**
-   * 已分配属性点总数
+   * 已分配属性点总数（人形）
    */
-  const allocatedPoints = computed(() => {
-    return Object.values(attributes.value).reduce((sum, val) => sum + val, 0)
+  const dollAllocatedPoints = computed(() => {
+    return Object.values(dollAttributes.value).reduce((sum, val) => sum + val, 0)
   })
 
   /**
-   * 剩余可用属性点
+   * 已分配属性点总数（人类）
    */
-  const remainingPoints = computed(() => totalAttributePoints.value - allocatedPoints.value)
+  const humanAllocatedPoints = computed(() => {
+    return Object.values(humanAttributes.value).reduce((sum, val) => sum + val, 0)
+  })
+
+  /**
+   * 剩余可用属性点（人形）
+   */
+  const dollRemainingPoints = computed(() => totalAttributePoints.value - dollAllocatedPoints.value)
+
+  /**
+   * 剩余可用属性点（人类）
+   */
+  const humanRemainingPoints = computed(() => totalAttributePoints.value - humanAllocatedPoints.value)
   
   // ==================== Actions ====================
   
@@ -136,8 +160,8 @@ export const useCharacterStore = defineStore('character', () => {
     hardwareSpec.value = spec
     baseAttributePoints.value = points
     totalAttributePoints.value = points
-    // 重置属性值
-    attributes.value = { structure: 0, strength: 0, athletics: 0, compute: 0, information: 0, power: 0 }
+    // 重置人形属性值
+    dollAttributes.value = { structure: 0, torque: 0, athletics: 0, compute: 0, information: 0, power: 0 }
   }
 
   /**
@@ -151,11 +175,19 @@ export const useCharacterStore = defineStore('character', () => {
   }
 
   /**
-   * 更新属性值
+   * 更新人形属性值
    * @param {Object} newAttributes - 新的属性值对象
    */
-  function updateAttributes(newAttributes) {
-    attributes.value = { ...newAttributes }
+  function updateDollAttributes(newAttributes) {
+    dollAttributes.value = { ...newAttributes }
+  }
+
+  /**
+   * 更新人类属性值
+   * @param {Object} newAttributes - 新的属性值对象
+   */
+  function updateHumanAttributes(newAttributes) {
+    humanAttributes.value = { ...newAttributes }
   }
 
   /**
@@ -187,7 +219,8 @@ export const useCharacterStore = defineStore('character', () => {
     baseAttributePoints.value = 0
     totalAttributePoints.value = 0
     attributeLimit.value = 5
-    attributes.value = { structure: 0, strength: 0, athletics: 0, compute: 0, information: 0, power: 0 }
+    dollAttributes.value = { structure: 0, torque: 0, athletics: 0, compute: 0, information: 0, power: 0 }
+    humanAttributes.value = { structure: 0, torque: 0, athletics: 0, compute: 0, information: 0, power: 0 }
     skills.value = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0 }
     selectedTraits.value = ['', '']
     totalSkillPoints.value = 15
@@ -203,7 +236,8 @@ export const useCharacterStore = defineStore('character', () => {
     baseAttributePoints,
     totalAttributePoints,
     attributeLimit,
-    attributes,
+    dollAttributes,
+    humanAttributes,
     skills,
     skillRanges,
     totalSkillPoints,
@@ -212,15 +246,18 @@ export const useCharacterStore = defineStore('character', () => {
     // Getters
     hasName,
     hasHardwareSpec,
-    allocatedPoints,
-    remainingPoints,
+    dollAllocatedPoints,
+    humanAllocatedPoints,
+    dollRemainingPoints,
+    humanRemainingPoints,
 
     // Actions
     setCharacterName,
     setCharacterType,
     setHardwareSpec,
     setManufacturer,
-    updateAttributes,
+    updateDollAttributes,
+    updateHumanAttributes,
     updateSkills,
     setTrait,
     resetCharacter

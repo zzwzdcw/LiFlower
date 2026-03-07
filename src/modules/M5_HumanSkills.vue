@@ -6,12 +6,13 @@
 -->
 <template>
   <div class="module-human-skills">
-    <div class="module-header">
-      <h3 class="module-title">技能点分配</h3>
-      <span class="points-info">
-        可用技能点：<span class="points-highlight">{{ remainingPoints }}</span> / {{ effectiveSkillPoints }}
-      </span>
-    </div>
+    <ModuleHeader title="技能点分配" subtitle="Skills">
+      <template #right>
+        <span class="points-info">
+          可用技能点：<span class="points-highlight">{{ remainingPoints }}</span> / {{ effectiveSkillPoints }}
+        </span>
+      </template>
+    </ModuleHeader>
     <AttributeAllocator
       :attribute-points="effectiveSkillPoints"
       :attribute-limit="skillLimit"
@@ -33,6 +34,7 @@ import { useModuleOutputsStore } from '@/stores/moduleOutputs'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import { useModifiers } from '@/composables/useModifiers'
 import AttributeAllocator from '@/components/AttributeAllocator.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 import skillsData from '@/data/skills.json'
 
 const characterStore = useCharacterStore()
@@ -334,21 +336,6 @@ $cyber-cyan: #00f3ff;
 
 .module-human-skills {
   width: 100%;
-
-  .module-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-    padding-bottom: 8px;
-  }
-
-  .module-title {
-    color: $cyber-cyan;
-    margin: 0;
-    font-size: 16px;
-  }
 
   .points-info {
     color: rgba(255, 255, 255, 0.8);

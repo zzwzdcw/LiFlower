@@ -6,8 +6,8 @@
 -->
 <template>
   <div class="module-m0">
-    <h3 class="module-title">模块0：导入</h3>
-    
+    <ModuleHeader title="导入" subtitle="Import" />
+
     <div class="form-item">
       <label>角色名字</label>
       <el-input
@@ -43,6 +43,7 @@
 import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import TipButton from '@/components/TipButton.vue'
+import ModuleHeader from '@/components/ModuleHeader.vue'
 import { useCharacterStore } from '@/stores/character'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 
@@ -75,12 +76,6 @@ const importCharacter = () => {
 @use '@/styles/input-styles.scss' as *;
 
 .module-m0 {
-  .module-title {
-    color: #00f3ff;
-    font-family: "Courier New", monospace;
-    margin-bottom: 20px;
-  }
-
   .form-item {
     margin-bottom: 20px;
 
