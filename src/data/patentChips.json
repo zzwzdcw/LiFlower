@@ -1,0 +1,101 @@
+{
+  "description": "专利芯片数据 - 只能在车卡时选择1个，不同企业的人形可用专利芯片不同。\n如需选择更多专利芯片，每2个专利芯片之间需加入1个协调芯片（2专利=3槽位，3专利=6槽位）",
+  "chips": [
+    {
+      "id": 1,
+      "name": "火控芯片",
+      "nameEn": "Fire Control System",
+      "manufacturer": "北方电子工业集团",
+      "description": "来自北方电子工业集团，在战场真实环境训练出的战术模型。\n足以处理近身格斗、巷战、狙击、反装甲等多种情景下的战斗方法。",
+      "effect": "[AUTO]枪械 +2 ，<br>[MANUAL]枪械检定可以消耗1EP获得1次优势。"
+    },
+    {
+      "id": 2,
+      "name": "冰墙",
+      "nameEn": "I.C.E.",
+      "manufacturer": "I.C.E.",
+      "description": "大名鼎鼎的ICE公司生产的防火墙芯片。\n运行时可以自己生成随机的防火墙阵列，使得破解极其困难。",
+      "effect": "[AUTO]编程 +2 <br>[MANUAL]编程检定可以通过消耗1EP获得1次优势。"
+    },
+    {
+      "id": 3,
+      "name": "互联协议",
+      "nameEn": "Interconnect Protocol",
+      "manufacturer": "MachinaNex Group",
+      "description": "机联社自研的芯片，作为核心卖点深度垄断。\n带有通用编译算法，可以高效操控从扫地机器人到固定翼飞机的所有系统。\n（注：不提供破解能力）",
+      "effect": "[MANUAL]无需时间编译即可操控开放协议的机械。"
+    },
+    {
+      "id": 4,
+      "name": "自律机械",
+      "nameEn": "Autonomous Mechanism",
+      "manufacturer": "Abyssal Chosen",
+      "description": "通过给人形AI提供编造的主人指令，解决人形的粘人问题。\n据说时间长了会导致人形叛逆不听话，但是在单独行动的场合能让人形AI有更好的发挥。\n海渊之子公司设计的有争议性的芯片，引发了武器管制局的强烈不满。",
+      "effect": "[MANUAL]使人形长时间不和主人互动也不陷入惩罚。"
+    },
+    {
+      "id": 5,
+      "name": "工业操控单元",
+      "nameEn": "Industrial Control Unit",
+      "manufacturer": "MachinaNex Group",
+      "description": "超越了一般的管家协议，而是对接各种工业机械的支持库。\n包含对生产线的预编译模型，使得人形能直接接管整条工业生产线。\n当接管模块化工厂时，还能高速完成生产线重组来制造完全不同的东西。",
+      "effect": "[MANUAL]无需编译即可操控工业机械生产对应产品的能力。"
+    },
+    {
+      "id": 6,
+      "name": "工程制作核心",
+      "nameEn": "Engineering Fabrication Core",
+      "manufacturer": "Equinox Dynamics",
+      "description": "能解析物品构造和原理，并逆推出生产步骤的模型。\n包含对手工制造的高精度运动模型，可以使人形拿一把锉刀就能化身一台车床。\n木工、焊接、电工等都得心应手。",
+      "effect": "[AUTO]工程 +3 "
+    },
+    {
+      "id": 7,
+      "name": "电磁信号处理",
+      "nameEn": "SIGINT Processing",
+      "manufacturer": "北方电子工业集团",
+      "description": "能通过伪装在复杂信号环境隐藏自己的身形。\n也可以分析敌对雷达扫描/激光指示的来源进行主动告警。\n人形诞生之初就存在的芯片，北方电子工业集团每次专利到期就会推出更好的版本。",
+      "effect": "[AUTO]隐匿 +2 <br>[MANUAL]抗电子干扰 +2 ；感知 +2 "
+    },
+    {
+      "id": 8,
+      "name": "网络安全模型",
+      "nameEn": "Cybersecurity Model",
+      "manufacturer": "CypherHawk",
+      "description": "对网络攻防都具有较强加成的优质模型芯片。\n虽说是用于网络安全，但实际上用户几乎都是黑客。",
+      "effect": "[AUTO]破解 +2 ；编程 +2 "
+    },
+    {
+      "id": 9,
+      "name": "损伤管理算法",
+      "nameEn": "Damage Control Algorithm",
+      "manufacturer": "UMIC",
+      "description": "用先进的预编程模型，在伤害到达之线做好损坏管理。\n相当前沿的芯片，很难想象是来自于俄罗斯乌拉尔军工联合体之手。",
+      "effect": "[AUTO]HP +4 。"
+    },
+    {
+      "id": 10,
+      "name": "超频",
+      "nameEn": "Overclock",
+      "manufacturer": "СВКБ",
+      "description": "通过精密的过载设计，可以无损害地榨干人形身体的每一点性能。\n雪狼设计局最初就是用这个功能打开了人形市场，曾经是绝对的机密技术。\n后来随着模块化思潮的盛行，雪狼设计局也将功能集成在了芯片上进行售卖盈利。",
+      "effect": "[MANUAL]可以消耗能量，在任何属性检定中获得优势。"
+    }
+  ],
+  "rules": {
+    "defaultSlots": 6,
+    "maxPatentWithoutCoordination": 1,
+    "coordinationChipCost": "每2个专利芯片之间需要1个协调芯片",
+    "slotCalculation": {
+      "1_patent": 1,
+      "2_patent": 3,
+      "3_patent": 6
+    },
+    "notes": [
+      "专利芯片只能在车卡时选择",
+      "不同人形企业的可用专利芯片完全不同",
+      "专利芯片可以拆下替换，但本身不能升级，也不能购买",
+      "黑市上的专利芯片非常昂贵"
+    ]
+  }
+}

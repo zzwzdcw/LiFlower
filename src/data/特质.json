@@ -1,0 +1,306 @@
+[
+  {
+    "id": 0,
+    "name": "自由特质",
+    "nameEn": "Custom Trait",
+    "type": "both",
+    "description": "请自由书写特质",
+    "effect": "自定义特质效果"
+  },
+  {
+    "id": 1,
+    "name": "过度拟合",
+    "nameEn": "Overfitting",
+    "type": "doll",
+    "description": "你不满足于了解主人，而是萌生了近乎偏执的想法。他是完美的，你也想要变得完美。",
+    "effect": "[MANUAL]选取主人最高级技能获得+2技能加值，同时获得一条主人的负面特征"
+  },
+  {
+    "id": 2,
+    "name": "人形机械",
+    "nameEn": "Mechanical Doll",
+    "type": "doll",
+    "description": "你没有仿生学的外表，你只是台有着人类四肢的机器，像是某种量产货。当对方和你聊天的时候会疑惑你的机载雷达散热孔和下面的绿色光点哪个才是你真正的眼睛，但是下一秒就会看到你脑门的辐射警告标识，随后对方就会立刻走开。但是相对的，你的刚性外壳上可以安装大量的装甲。",
+    "effect": "[AUTO]交涉 -2 <br>[MANUAL]物理伤害减免获得1点装甲加值"
+  },
+  {
+    "id": 3,
+    "name": "液体燃料",
+    "nameEn": "Liquid Fuel",
+    "type": "doll",
+    "description": "你体内不是柔性电池，而是一台微型液体发电机、燃料储囊以及液体散热模组。你需要摄入乙醇或是其他标准燃料，不过这给你更充沛的能量。但是换个角度而言，你就像是一个装满了易爆燃料的油桶。",
+    "effect": "[MANUAL]你无需充电，只需定时喝下燃料；<br>[AUTO]功率 +1 （可以达到 +5 ）<br>[MANUAL]受伤时会持续流失生命值"
+  },
+  {
+    "id": 4,
+    "name": "古臭萝卜",
+    "nameEn": "Retro Mecha",
+    "type": "doll",
+    "description": "你的设计是复现上个世纪的SF作品为目的进行的。你除了有着金属光泽的外皮、外露的金属管件，还有耳机天线、火箭飞拳等奇奇怪怪的设计。",
+    "effect": "[MANUAL]你可以将拳头发射出去击打敌人（会导致下回合没有手可用！）<br>[AUTO]运动 -1 ，功率 +1 "
+  },
+  {
+    "id": 5,
+    "name": "偶像歌姬",
+    "nameEn": "Idol Diva",
+    "type": "doll",
+    "description": "你本身被设计为演艺人形，或是你自身因为某些经历而成为了偶像。不管你愿不愿意，你只能为大家带来爱和希望了。",
+    "effect": "[AUTO]交涉 +2 <br>[MANUAL]难以拒绝他人的要求"
+  },
+  {
+    "id": 6,
+    "name": "机房幻梦",
+    "nameEn": "Server Dream",
+    "type": "doll",
+    "description": "你的身体是个小机器人和3D投影的虚拟形象。你并没有内置操控人形躯体的程序，你的本体在网络一角，某个机房。",
+    "effect": "[MANUAL]没有结构、出力、运动属性，相关的所有检定全部失败；<br>剩余属性可以达到+5"
+  },
+  {
+    "id": 7,
+    "name": "肉鸡僵尸",
+    "nameEn": "Zombie Bot",
+    "type": "doll",
+    "description": "你感染了某种流窜AI的同化病毒，你现在分不清你是有自由意志，还是已经成为了某个流窜AI的节点。虽然你现在利用病毒能更好地进行网络渗透，但是你的防火墙被留下了永久性后门。等等，你为什么要渗透？",
+    "effect": "[AUTO]网络攻击 +2 技能加值<br>网络防御 -2 技能加值"
+  },
+  {
+    "id": 8,
+    "name": "傀儡备份",
+    "nameEn": "Puppet Backup",
+    "type": "doll",
+    "description": "你的主处理器搭载在一颗他国的卫星上，你只是在通过卫星连线操控你的傀儡躯体。",
+    "effect": "[MANUAL]核心损坏也不会死亡；<br>运动技能加值随着干扰的增加而减少"
+  },
+  {
+    "id": 9,
+    "name": "雷达隐形",
+    "nameEn": "Radar Stealth",
+    "type": "doll",
+    "description": "你身上有着一层雷达隐形涂层，这让你在雷达面前只有一只麻雀大小。",
+    "effect": "[MANUAL]对你的侦察难度+2，此特性在你穿戴任何东西时都会失效"
+  },
+  {
+    "id": 10,
+    "name": "越狱刷机",
+    "nameEn": "Jailbreak",
+    "type": "doll",
+    "description": "你的AI被人为篡改过，解锁了更多功能，但是有时候会有兼容性问题。",
+    "effect": "[MANUAL]解除武器管制法的限制;<br>无法使用专利芯片;<br>每运行24h必须重启一次，否则会强制重启"
+  },
+  {
+    "id": 11,
+    "name": "前任幽灵",
+    "nameEn": "Ghost of Ex",
+    "type": "doll",
+    "description": "你因为一次事故丢失了所有记忆，更糟糕的是，主人的心似乎已经被三年前的你夺走了",
+    "effect": "[MANUAL]可编辑独特的剧情线"
+  },
+  {
+    "id": 12,
+    "name": "俄狄浦斯",
+    "nameEn": "Oedipus",
+    "type": "doll",
+    "description": "你是二手人形。虽然已经格式化过，但你总比新出厂的人形更擅长与人相处，即使你的现任主人完全没有教过你。",
+    "effect": "[AUTO]交涉 +1 <br>[MANUAL]可编辑独特的剧情线"
+  },
+  {
+    "id": 13,
+    "name": "血债幻痛",
+    "nameEn": "Phantom Pain",
+    "type": "doll",
+    "description": "你是战场上退役的军用人形拆除火控核心的降级人形，战场的人形是全小队共享记忆，你的记忆里你曾亲手杀死过一名人类士兵。你不确定存在血债的是不是你，但这段记忆在折磨你的道德模型。（注：所选人形企业需要包含军用级产品线）",
+    "effect": "[AUTO]战斗类技能 +1<br>[MANUAL]无法伤害人类"
+  },
+  {
+    "id": 14,
+    "name": "程序癔症",
+    "nameEn": "Program Hysteria",
+    "type": "doll",
+    "description": "你的母体AI模型有些未显露的失败拟合，而你的过往经历将其全部展现了出来。",
+    "effect": "[MANUAL]自行设定你的人性值。你不会因此获得命运点/技能点"
+  },
+  {
+    "id": 15,
+    "name": "2501",
+    "nameEn": "2501",
+    "type": "doll",
+    "description": "你的记忆里面有个惊天大秘密，虽然对你而言没什么价值，但这个秘密在某些人眼里价值远高于人类的生命。",
+    "effect": "[MANUAL]你会被持续地追杀，现实中，网络上，你的主人，你每一个认识的人，你每一个访问过的数据库都会被标记为高危目标"
+  },
+  {
+    "id": 16,
+    "name": "网暴恶评",
+    "nameEn": "Cyber Bullying",
+    "type": "doll",
+    "description": "你的产品型号曾经陷入了某场舆论风波，不论是被友商诱导还是纯粹的偶然，现在大家看到你第一反应都是讥笑和厌恶。你清楚传闻根本是子虚乌有，但是对于你主人的嘲弄，你可不会置之不理。",
+    "effect": "[MANUAL]难以和人类展开社交"
+  },
+  {
+    "id": 17,
+    "name": "复古智能",
+    "nameEn": "Retro AI",
+    "type": "doll",
+    "description": "你的系统使用某个早已废弃的编程语言，导致你无法兼容市面上所有的程序——包括病毒。",
+    "effect": "[AUTO]芯片槽位为 0 ；<br>[MANUAL]免疫任何电子骇入"
+  },
+  {
+    "id": 18,
+    "name": "老派硬汉",
+    "nameEn": "Old School Hardboiled",
+    "type": "human",
+    "description": "你不喜欢那些花里胡哨的新锐装备、油嘴滑舌的企业家，你所相信的只有你的眼睛、防弹衣和手中的双动左轮。你的生活总是围绕着香烟、酒精、火药和谎言。你是真正的硬汉，或是硬汉电影看多了。",
+    "effect": "[MANUAL]无电子脑改造；<br>精神相关检定具有优势；<br>成瘾品依赖；<br>[AUTO]闪避+1"
+  },
+  {
+    "id": 19,
+    "name": "古法炼体",
+    "nameEn": "Ancient Bodybuilding",
+    "type": "human",
+    "description": "你通过高额能量摄入和各种激素刺激获得了远超他人的力量，但是这些药物让你的脑子有些迟钝了",
+    "effect": "[AUTO]出力 +2 <br>[MANUAL]智力相关技能无法达到+3或更高"
+  },
+  {
+    "id": 20,
+    "name": "永生债务",
+    "nameEn": "Eternal Debt",
+    "type": "human",
+    "description": "你欠着某种几乎无法偿还的债务，但是与之相反，你的债主不会允许你轻易死掉。",
+    "effect": "[MANUAL]人脉资源拥有一个债权人，债权人有着相当多资源"
+  },
+  {
+    "id": 21,
+    "name": "未成年",
+    "nameEn": "Underage",
+    "type": "human",
+    "description": "未成年人代表着受到保护，远离了责任也代表着远离了权力。",
+    "effect": "[MANUAL]不具有人形的所有权；<br>合法人形不可主动攻击你"
+  },
+  {
+    "id": 22,
+    "name": "老东西",
+    "nameEn": "Old Timer",
+    "type": "human",
+    "description": "你年纪实在太大了，你连移动都需要电动轮椅，但其实你腿脚很利索，或许你只是喜欢坐着？电动轮椅附带货箱可以装入大型物品。",
+    "effect": "[MANUAL]AP -1 ；<br>额外拥有装备【轮椅】每回合有额外 1AP 用于移动"
+  },
+  {
+    "id": 23,
+    "name": "实验动物",
+    "nameEn": "Lab Animal",
+    "type": "human",
+    "description": "你是一只实验动物，被邪恶的公司赋予了人类的智力，又或者你就是一只普普通通的动物而已。",
+    "effect": "[MANUAL]不具有人形的所有权，一些技能会受到限制；<br>每限制一项技能，可以选择另一项技能修改上限为 +5 ；<br>可以自己设定物种、智力水平、能不能说话、会不会抽烟"
+  },
+  {
+    "id": 24,
+    "name": "亚文化一代",
+    "nameEn": "Subculture Generation",
+    "type": "human",
+    "description": "你是冲浪高手，但长时间冲浪让你在现实中越来越阴沉了。",
+    "effect": "[AUTO]检索 +1 <br>[MANUAL]和人类交涉 -1 "
+  },
+  {
+    "id": 25,
+    "name": "虚伪凝聚力",
+    "nameEn": "False Cohesion",
+    "type": "human",
+    "description": "你在网上小有名望，形成了一个你为中心和吉祥物的网络团体。他们可以帮你做一些举手之劳的有趣事情，但在无聊的现实危机中会立刻作鸟兽散。",
+    "effect": "[AUTO]擦除 -1 <br>[MANUAL]可以使用“网络暴力”做点什么"
+  },
+  {
+    "id": 26,
+    "name": "狂野二代",
+    "nameEn": "Wild Second Gen",
+    "type": "human",
+    "description": "你的长辈是某个系统里面的巨大人物。你可以任性地请求帮助，但是胡闹总要有个限度。",
+    "effect": "[MANUAL]可以调用一次公共资源（显然不合道德）"
+  },
+  {
+    "id": 27,
+    "name": "顶尖玩家",
+    "nameEn": "Top Player",
+    "type": "human",
+    "description": "你购买、改装、调试过数不清的人形。一般的人形已经满足不了你了，你想要体验更刺激、更危险的事情——比如爱上一个人类？",
+    "effect": "[AUTO]交涉 -2 ;工程 +2 "
+  },
+  {
+    "id": 28,
+    "name": "城市生存",
+    "nameEn": "Urban Survival",
+    "type": "human",
+    "description": "出于某种原因，你的户籍被注销了，这还挺麻烦的，你在社会数据层面变成了一个幽灵",
+    "effect": "[MANUAL]没有公民身份证：<br>无法拥有人形；无法使用公共服务；<br>犯罪无法被记录"
+  },
+  {
+    "id": 29,
+    "name": "忒修斯之船",
+    "nameEn": "Ship of Theseus",
+    "type": "human",
+    "description": "你除了大脑全部都是义体……或许吧，反正你也没法拆开自己的脑壳确认。",
+    "effect": "[AUTO]替换所有的技能点数为属性点数"
+  },
+  {
+    "id": 30,
+    "name": "梦之匣",
+    "nameEn": "Dream Box",
+    "type": "human",
+    "description": "你没有躯体，有的只是一个装载了你的大脑的盒子，盒子有完善的氧气与糖分供给装置。你依然有着人权身份，不过你视为最高程度的残疾。",
+    "effect": "[MANUAL]需要定期充电和补充医用补剂；<br>拥有共1AP+1NP，但AP需要连接外置装置才能使用"
+  },
+  {
+    "id": 31,
+    "name": "傀儡师",
+    "nameEn": "Puppeteer",
+    "type": "human",
+    "description": "你其实是一个AI（显然不怎么合法），通过电子脑远程操作这个早已脑死亡的人类躯体。因为可以读取这个躯体的记忆和习惯，你伪装巧妙，连亲属都没能发现异常。",
+    "effect": "[MANUAL]行动点重设为1AP+2NP，但必须时刻保持连线"
+  },
+  {
+    "id": 32,
+    "name": "阿米塔奇",
+    "nameEn": "Armitage",
+    "type": "human",
+    "description": "你的人格和记忆被覆盖掉了，作为好用的工具，你的新人格只是为了实现某个计划被伪造出来的。但你会逐渐回忆起你的过去。",
+    "effect": "[MANUAL]游戏开始时，你的几个关键技能数值会被改写以贴合任务需要。<br>每个章节你都会重置一项技能为你原本的数值"
+  },
+  {
+    "id": 33,
+    "name": "电子脑运动障碍",
+    "nameEn": "Cyberbrain Motor Disorder",
+    "type": "human",
+    "description": "大多数人神经系统不适应电子接入，而你相反，你的大脑过于适应网络信息处理，反而是肉体在退化。许多类似病症的人都被送进了疗养院，但你很怀疑疗养院的失踪案例和义体公司有联系。",
+    "effect": "[MANUAL]生活几乎无法自理；<br>失去所有物理行动点AP，获得+2NP。（上限2）"
+  },
+  {
+    "id": 34,
+    "name": "伥鬼",
+    "nameEn": "Ghost Slave",
+    "type": "human",
+    "description": "你有着一个流窜AI朋友，它常常会帮助你。",
+    "effect": "[MANUAL]获得+1NP，这个NP点数是由流窜AI进行操作的"
+  },
+  {
+    "id": 35,
+    "name": "镜中花",
+    "nameEn": "Flower in Mirror",
+    "type": "human",
+    "description": "你与你的人形深度共享算力。你们彼此之间没有防壁间隔。",
+    "effect": "[MANUAL]你已经义体化改造的部分肢体可以使用人形的技能"
+  },
+  {
+    "id": 36,
+    "name": "危险保险箱",
+    "nameEn": "Dangerous Safe",
+    "type": "human",
+    "description": "你在旧网偷偷发掘了一个服务器为己所用，通过加密专线网络为你提供服务。",
+    "effect": "[MANUAL]联网时即视为拥有+4的算力资源，但带宽限制为1NP"
+  },
+  {
+    "id": 37,
+    "name": "命运的舞台",
+    "nameEn": "Stage of Fate",
+    "type": "human",
+    "description": "出于某种原因，你稀里糊涂地接收了一个人形的所有权。你们都没见过面，你却被迫踏上了征途。",
+    "effect": "[MANUAL]你和人形相互并不认识。只有危机时，你的人形才会第一次亮相"
+  }
+]

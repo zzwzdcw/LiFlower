@@ -3,99 +3,103 @@
     "id": 1,
     "nameZh": "柊神機巧",
     "nameEn": "Hiiragi DeusWorks Co., Ltd.",
-    "description": "原本是 AI 调校 + 人形租聘业务起家的，由于其细腻的 AI 表现而大获成功，业务逐年扩大到 AI 训练再到人形开发，如今已是世界顶级人形制造商。专注于顶级保镖人形的开发，走了相当不寻常的技术路线：用 AI 训练的绝对克制来绕过武器管制法的限制，得以合法拥有超越一般人形的性能。常说柊机社的主人受到威胁，他的人形也绝不攻击任何人类——但在一个司法社会中，有时扮演一个受害者是更好的选择。",
-    "effectDescription": "在当前规格下获得 +3 属性点数（至多 +18）",
-    "restriction": "不能主动攻击没有威胁的敌人，并且无法进行杀死人类的行为",
-    "producedSpecs": ["民用级", "警用级"],
+    "description": "原本是 AI 调校 + 人形租聘业务起家的，由于其细腻的 AI 表现而大获成功，业务逐年扩大到 AI 训练再到人形开发，如今已是世界顶级人形制造商。专注于顶级保镖人形的开发，走了相当不寻常的技术路线：用 AI 训练的绝对克制来绕过武器管制法的限制，得以合法拥有超越一般人形的性能。\n常说柊机社的主人受到威胁，他的人形也绝不攻击任何人类——但在一个司法社会中，有时扮演一个受害者是更好的选择。",
     "effect": {
+      "effectText": "[AUTO]在当前规格下获得 +3 属性点数（至多 +18）；<br>[MANUAL]不能主动攻击没有威胁的敌人，无法进行杀死人类的行为",
       "attributePointsBonus": 3,
       "attributePointsBonusLimit": 18
-    }
+    },
+    "producedSpecs": [2, 3],
+    "availablePatentChips": [2, 8]
   },
   {
     "id": 2,
     "nameZh": "天穹防务",
     "nameEn": "AetherGuard",
-    "description": "东亚军工集合体北方电子工业集团的民用市场子品牌。北方电子工业集团作为老牌无人技术企业，是第一批实战军用人形的开发者。产品常被说 AI 调校不够人性化，作为保镖和战术顾问的能力优秀，作为女仆的话，情商有点低。",
-    "effectDescription": "闪避检定拥有 +2 技能加值",
-    "restriction": null,
-    "producedSpecs": ["劳工级", "民用级", "警用级", "军用级", "实验级"],
+    "description": "东亚军工集合体<b>北方电子工业集团</b>的民用市场子品牌。北方电子工业集团作为老牌无人技术企业，是第一批实战军用人形的开发者。\n产品常被说 AI 调校不够人性化，作为保镖和战术顾问的能力优秀，作为女仆的话，情商有点低。",
     "effect": {
+      "effectText": "[AUTO]闪避 +2 ",
       "evasionBonus": 2,
       "evasionBonusLimit": -1
-    }
+    },
+    "producedSpecs": [1, 2, 3, 4, 5],
+    "availablePatentChips": [1, 2, 7]
   },
   {
     "id": 3,
     "nameZh": "雪狼设计局",
     "nameEn": "Снежневолчий Конструкторское Бюро (СВКБ)",
-    "description": "俄罗斯国家组建的人形设计生产一体企业，隶属乌拉尔军工复合体（UMIC）。虽然 AI 较弱，但卖点是可靠性和安全感。产品优美、凶猛而可靠，有人认为他们的耿直也非常有趣。",
-    "effectDescription": "获得额外 +4HP",
-    "restriction": null,
-    "producedSpecs": ["劳工级", "民用级", "警用级", "军用级", "实验级"],
+    "description": "俄罗斯国家组建的人形设计生产一体企业，隶属<b>乌拉尔军工复合体</b>（UMIC）。虽然 AI 较弱，但卖点是可靠性和安全感。\n产品优美、凶猛而可靠，有人认为他们的耿直也非常有趣。",
     "effect": {
+      "effectText": "[AUTO]获得额外 +4HP",
       "hpBonus": 4,
       "hpBonusLimit": -1
-    }
+    },
+    "producedSpecs": [1, 2, 3, 4, 5],
+    "availablePatentChips": [1, 2, 4, 7, 9, 10]
   },
   {
     "id": 4,
     "nameZh": "暗隼电子",
     "nameEn": "CypherHawk",
-    "description": "发源于北美，前身为硅谷的老牌科技公司，发展历史上开发过不少优秀的统合 AI，也有一些军工复合体描述。北美分裂后经过财团重组形成。在网络技术领域上一直领先世界。人形物理性能说不上顶尖，但其网络能力傲视群雄。AI 大概会和极客很聊得来。",
-    "effectDescription": "算力 +1（可以达到 +5）；每回合可将 1AP 兑换为 1NP",
-    "restriction": null,
-    "producedSpecs": ["劳工级", "民用级", "警用级", "军用级", "实验级"],
+    "description": "发源于北美，前身为硅谷的老牌科技公司，发展历史上开发过不少优秀的统合 AI，也有一些军工复合体描述。北美分裂后经过财团重组形成。在网络技术领域上一直领先世界。\n人形物理性能说不上顶尖，但其网络能力傲视群雄。AI 大概会和极客很聊得来。",
     "effect": {
+      "effectText": "[AUTO]算力 +1（可以达到 +5）；<br>[MANUAL]每回合可将 1AP 兑换为 1NP",
       "computeBonus": 1,
       "computeBonusLimit": 5,
-      "npExchangeBonus": 1
-    }
+      "apToNp": true
+    },
+    "producedSpecs": [1, 2, 3, 4, 5],
+    "availablePatentChips": [2, 4, 5, 8]
   },
   {
     "id": 5,
     "nameZh": "机联社",
     "nameEn": "MachinaNex Group",
-    "description": "新欧盟将多家机械制造商整合成的巨型集团，组建了一家人形公司专门负责制造操作员人形。有着庞大的软件支持库，能轻易通过网络控制从工程机械到战车等所有支持无线协议的物件。但是相对的，单体素质称不上顶尖。机联社的 AI 似乎会受到连线的设备的影响——如果她说自己的性别是武装直升机，她可能真的是。",
-    "effectDescription": "拥有一个紧密连接的非人形智能机械（尖端武装），可将其视作第二躯体（两个躯体芯片序列号相同）。第二躯体可以是任意种类的机械，从汽车到主战坦克，亦或是仿生动物乃至双足外骨骼装甲",
-    "restriction": null,
-    "producedSpecs": ["劳工级", "民用级", "警用级", "军用级", "实验级"],
-    "effect": {}
+    "description": "为了获得全产业链优势，新欧盟将多家机械制造商整合成一个巨型集团。机联社组建了一家人形公司专门负责制造操作员人形，通过捆绑销售，所有机械都间接完成了智能化。\n人形有着庞大的软件支持库，能轻易通过网络控制从工程机械到战车等所有支持无线协议的物件。单体素质称不上顶尖。",
+    "effect": {
+      "effectText": "[MANUAL]拥有一个紧密连接的非人形智能机械（尖端武装）；可将其视作第二躯体（两个躯体芯片序列号相同）；\n第二躯体可以是任意种类的机械，从汽车到主战坦克，亦或是仿生动物乃至双足外骨骼装甲",
+      "secondBody": true
+    },
+    "producedSpecs": [1, 2, 3, 4, 5],
+    "availablePatentChips": [3, 5, 6]
   },
   {
     "id": 6,
     "nameZh": "赤道动力",
     "nameEn": "Equinox Dynamics",
-    "description": "成立之初用于生产第三世界开发的低端劳工人形。特点是非常模块化，快速地实现维修、功能转换。最近也进军了高端市场，有着更高的功率，零件也是尽可能通用。主要是兼容性好，维修也方便，所以很适合加装一些奇奇怪怪的硬件。但是赤道动力的 AI 鲜有人讨论，可能客户人群都在忙着玩硬件吧。",
-    "effectDescription": "维修时间减半，维修需求零件下降 1 级",
-    "restriction": null,
-    "producedSpecs": ["劳工级", "民用级", "警用级"],
+    "description": "这个国际联合企业成立之初是用于生产第三世界开发的低端劳工人形。特点是非常模块化，快速地实现维修、功能转换。最近也和各大技术公司合作，进军了高端市场，有着更高的功率，零件也是尽可能通用。\n人形主要是兼容性好，维修也方便，所以很适合加装一些奇奇怪怪的硬件。",
     "effect": {
-      "repairTimeBonus": -0.5,
-      "repairPartsLevelBonus": -1
-    }
+      "effectText": "[MANUAL]维修时间减半；<br>维修需求零件下降 1 级",
+      "repairTimeReduction": 0.5,
+      "repairPartLevelReduction": 1
+    },
+    "producedSpecs": [1, 2, 3],
+    "availablePatentChips": [4, 6, 10]
   },
   {
     "id": 7,
     "nameZh": "海渊之子",
     "nameEn": "Abyssal Chosen",
-    "description": "由不知名财团赞助成立的无国界人形生产商，生产全部在海上浮岛，对于其企业理念、技术来源鲜有人知道。经常有特种部队和安全承包公司大量采购。单兵素质优秀，侦察和网络能力相当强力。网上常说如果你没罪犯可抓，可以去海渊之子的客户列表顺着查一下。他们的 AI 确实没什么道德底线，并且对保守秘密相当执着。",
-    "effectDescription": "侦察 +2 和电子干扰 +2",
-    "restriction": null,
-    "producedSpecs": ["警用级", "军用级"],
+    "description": "由不知名财团赞助成立的无国界人形生产商，不知为何有着比较强大的技术。这家人形生产全部在海上浮岛，对于其企业理念、技术来源鲜有人知道。经常有特种部队和安全承包公司大量采购此类人形。\n人形单兵素质优秀，侦察和网络能力相当强力。AI 确实没什么道德底线，并且对保守秘密相当执着。",
     "effect": {
-      "reconBonus": 2,
-      "electronicWarfareBonus": 2
-    }
+      "effectText": "[AUTO]侦察 +2；电子干扰 +2",
+      "investigationBonus": 2,
+      "hackingBonus": 2
+    },
+    "producedSpecs": [3, 4],
+    "availablePatentChips": [1, 2, 4, 6, 7]
   },
   {
     "id": 8,
     "nameZh": "黑品",
     "nameEn": "Blackware",
-    "description": "所有没有强大专利的人形公司都被蔑称为组装厂。真正的玩家会更青睐一些自组装的黑货。这类人形有着完整的功能，却没有武器管制局授予的序列号，因此可以做很多法律不允许的事情。谁知道那些黑市的零件是什么来头，有时候还能见到军用级的黑品。由于没有序列号，电子世界中会被识别为一个程序而非 AI。",
-    "effectDescription": "不受武器管制法的管辖",
-    "restriction": "没有武器管制局授予的序列号",
-    "producedSpecs": ["劳工级", "民用级", "警用级", "军用级", "实验级"],
-    "effect": {}
+    "description": "所有没有强大专利的人形公司都被蔑称为组装厂。真正的玩家会更青睐一些自组装的黑货。这类人形有着完整的功能，却没有武器管制局授予的序列号，因此可以做很多法律不允许的事情。\n由于没有序列号，武器管制法不生效，电子世界中会被识别为一个程序而非 AI。",
+    "effect": {
+      "effectText": "[MANUAL]不受武器管制法的管辖",
+      "noWeaponLawRestriction": true
+    },
+    "producedSpecs": [1, 2, 3, 4, 5],
+    "availablePatentChips": []
   }
 ]
