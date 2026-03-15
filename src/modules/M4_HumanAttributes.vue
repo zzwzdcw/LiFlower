@@ -27,12 +27,13 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue'
+import { computed, watch, ref, onMounted } from 'vue'
 import { useCharacterStore } from '@/stores/character'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import { useModifiers } from '@/composables/useModifiers'
 import { useModeStore } from '@/stores/mode'
+import { getM4Cache, ATTRIBUTE_KEYS } from '@/utils/cacheManager'
 import AttributeAllocator from '@/components/AttributeAllocator.vue'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 
@@ -284,6 +285,35 @@ useAutoOutput({
     return modifiers
   })
 })
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM4Cache()
+  if (!cache) return
+  
+  // 从数组恢复属性值（不验证上限，让玩家自己处理）
+  if (cache.attributes && Array.isArray(cache.attributes)) {
+    const newAttributes = {}
+    ATTRIBUTE_KEYS.forEach((key, index) => {
+      newAttributes[key] = cache.attributes[index] || 0
+    })
+    characterStore.updateHumanAttributes(newAttributes)
+    console.log('[M4] 从缓存恢复属性:', newAttributes)
+  }
+  
+  // 恢复人性值
+  if (cache.humanity !== undefined) {
+    characterStore.updateSkills({ 16: cache.humanity })
+    console.log('[M4] 从缓存恢复人性:', cache.humanity)
+  }
+})
+
+// 监听属性变化触发保存
+watch([characterStore.humanAttributes, () => characterStore.skills[16]], () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
 </script>
 
 <style lang="scss" scoped>

@@ -50,8 +50,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAutoOutput } from '@/composables/useModuleOutput'
+import { getM9Cache } from '@/utils/cacheManager'
 import DotGridAllocator from '@/components/DotGridAllocator.vue'
 import WeaponTagSelector from '@/components/WeaponTagSelector.vue'
 import ModuleHeader from '@/components/ModuleHeader.vue'
@@ -70,6 +71,57 @@ useAutoOutput({
     description: weaponDescription.value,
     tags: weaponTags.value.filter(tag => tag) // 过滤掉空值
   }))
+})
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM9Cache()
+  if (!cache) return
+  
+  // 恢复武器数据
+  if (cache.weaponName) {
+    weaponName.value = cache.weaponName
+  }
+  if (cache.weaponLevel) {
+    weaponLevel.value = cache.weaponLevel
+  }
+  if (cache.weaponDescription) {
+    weaponDescription.value = cache.weaponDescription
+  }
+  if (cache.weaponTags && Array.isArray(cache.weaponTags)) {
+    weaponTags.value = cache.weaponTags.length > 0 ? cache.weaponTags : ['']
+    console.log('[M9] 从缓存恢复武器标签:', weaponTags.value)
+  }
+  
+  console.log('[M9] 从缓存恢复武器:', {
+    name: weaponName.value,
+    level: weaponLevel.value,
+    description: weaponDescription.value,
+    tags: weaponTags.value
+  })
+})
+
+// 监听变化触发保存
+watch([weaponName, weaponLevel, weaponDescription, weaponTags], () => {
+  console.log('[M9] 武器数据变化，触发保存')
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
+
+// 注册本地数据到全局缓存管理器
+onMounted(() => {
+  if (window.liflowerCache) {
+    window.liflowerCache.registerM9({
+      weaponName,
+      weaponLevel,
+      weaponDescription,
+      weaponTags
+    })
+    console.log('[M9] 已注册到缓存管理器')
+  } else {
+    console.warn('[M9] window.liflowerCache 未定义')
+  }
 })
 </script>
 

@@ -26,7 +26,7 @@
   <div v-if="isCompact" class="combat-entry compact">
     <div class="compact-info">
       <span class="compact-name">
-        <TipButton level="1" :content="description" :show-icon="false">{{ name }}</TipButton>
+        <TipButton :level="1" :content="description" :show-icon="false">{{ name }}</TipButton>
       </span>
       <span class="compact-value">{{ value > 0 ? '+' : '' }}{{ value }}</span>
     </div>
@@ -56,7 +56,7 @@
   <div v-else class="combat-entry detailed">
     <!-- 项目名称 -->
     <div class="col col-name">
-      <TipButton level="1" :content="description" :show-icon="false">{{ name }}</TipButton>
+      <TipButton :level="1" :content="description" :show-icon="false">{{ name }}</TipButton>
     </div>
 
     <!-- 检定值 -->

@@ -33,8 +33,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAutoOutput } from '@/composables/useModuleOutput'
+import { getM18Cache } from '@/utils/cacheManager'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 import EquipmentSlot from '@/components/EquipmentSlot.vue'
 
@@ -69,6 +70,58 @@ const totalPoints = computed(() => {
 useAutoOutput({
   equipmentList,
   totalPoints
+})
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM18Cache()
+
+  // 恢复装备列表（逐个修改元素，保持引用不变）
+  if (cache && cache.equipmentList && cache.equipmentList.length > 0) {
+    // 先调整数组长度
+    while (equipmentList.value.length < cache.equipmentList.length) {
+      equipmentList.value.push({ id: 0, name: '', type: '', level: 2, description: '' })
+    }
+    // 逐个修改元素
+    cache.equipmentList.forEach((e, index) => {
+      if (equipmentList.value[index]) {
+        equipmentList.value[index].id = e.id
+        equipmentList.value[index].name = e.name
+        equipmentList.value[index].type = e.type
+        equipmentList.value[index].level = e.level
+        equipmentList.value[index].description = e.description
+      }
+    })
+    // 更新 ID 计数器
+    if (equipmentList.value.length > 0) {
+      equipmentIdCounter = Math.max(...equipmentList.value.map(e => e.id || 0))
+    }
+    console.log('[M18] 从缓存恢复装备:', equipmentList.value)
+  } else {
+    // 缓存为空时重置为初始状态
+    equipmentList.value = []
+    equipmentIdCounter = 0
+    console.log('[M18] 缓存为空，重置装备')
+  }
+})
+
+// 监听变化触发保存
+watch(equipmentList, () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
+
+// 注册本地数据到全局缓存管理器
+onMounted(() => {
+  if (window.liflowerCache) {
+    window.liflowerCache.registerM18({
+      equipmentList
+    })
+    console.log('[M18] 已注册到缓存管理器')
+  } else {
+    console.warn('[M18] window.liflowerCache 未定义')
+  }
 })
 </script>
 

@@ -28,6 +28,8 @@
 </template>
 
 <script setup>
+import TipButton from './TipButton.vue'
+
 const props = defineProps({
   modelValue: {
     type: Number,

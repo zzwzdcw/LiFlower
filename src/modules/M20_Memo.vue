@@ -20,10 +20,42 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import { getM20Cache } from '@/utils/cacheManager'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 
 const memo = ref('')
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM20Cache()
+  if (!cache) return
+  
+  // 恢复备忘录
+  if (cache.memo) {
+    memo.value = cache.memo
+    console.log('[M20] 从缓存恢复备忘录:', memo.value)
+  }
+})
+
+// 监听变化触发保存
+watch(memo, () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+})
+
+// 注册本地数据到全局缓存管理器
+onMounted(() => {
+  if (window.liflowerCache) {
+    window.liflowerCache.registerM20({
+      memo
+    })
+    console.log('[M20] 已注册到缓存管理器')
+  } else {
+    console.warn('[M20] window.liflowerCache 未定义')
+  }
+})
 </script>
 
 <style lang="scss" scoped>

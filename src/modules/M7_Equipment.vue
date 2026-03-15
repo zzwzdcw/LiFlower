@@ -60,9 +60,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
 import { useAutoOutput } from '@/composables/useModuleOutput'
+import { getM7Cache } from '@/utils/cacheManager'
 import ChipSlot from '@/components/ChipSlot.vue'
 import AttributeAllocator from '@/components/AttributeAllocator.vue'
 import ModuleHeader from '@/components/ModuleHeader.vue'
@@ -671,6 +672,47 @@ useAutoOutput({
   illegalPatentChips,
   chipTextOutput,
   shouldOutput
+})
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM7Cache()
+  if (!cache) return
+  
+  // 恢复芯片槽位
+  if (cache.chipSlots && Array.isArray(cache.chipSlots)) {
+    cache.chipSlots.forEach((slot, index) => {
+      if (chipSlots.value[index]) {
+        chipSlots.value[index].type = slot.type || 'none'
+        chipSlots.value[index].patentChipId = slot.patentChipId || null
+        chipSlots.value[index].config = slot.config || null
+      }
+    })
+    console.log('[M7] 从缓存恢复芯片槽位:', chipSlots.value)
+  }
+  
+  // 恢复破解模式
+  if (cache.hackMode) {
+    hackMode.value = true
+    console.log('[M7] 从缓存恢复破解模式：开启')
+  }
+})
+
+// 监听变化触发保存
+watch([chipSlots, hackMode], () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
+
+// 注册本地数据到全局缓存管理器
+onMounted(() => {
+  if (window.liflowerCache) {
+    window.liflowerCache.registerM7({
+      chipSlots,
+      hackMode
+    })
+  }
 })
 </script>
 

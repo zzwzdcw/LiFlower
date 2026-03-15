@@ -40,9 +40,12 @@ const props = defineProps({
   },
   // 显眼程度：1-3，3最显眼
   level: {
-    type: Number,
+    type: [Number, String],
     default: 1,
-    validator: (val) => [1, 2, 3].includes(val)
+    validator: (val) => {
+      const num = typeof val === 'string' ? parseInt(val) : val
+      return [1, 2, 3].includes(num)
+    }
   },
   // 是否显示图标
   showIcon: {

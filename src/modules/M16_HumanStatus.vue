@@ -54,8 +54,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
+import { getM16Cache } from '@/utils/cacheManager'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 import SafetyGrid from '@/components/SafetyGrid.vue'
 import ScarList from '@/components/ScarList.vue'
@@ -140,6 +141,84 @@ const humanityValue = computed(() => {
 
 // 命运点数（默认3，默认涂满）
 const fatePoints = ref(3)
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  console.log('[M16] onMounted 开始恢复')
+  const cache = getM16Cache()
+  console.log('[M16] 获取到的 cache:', cache)
+  if (!cache) {
+    console.log('[M16] cache 为 null，跳过恢复')
+    return
+  }
+  
+  // 恢复 AP/NP/EP 调整
+  if (cache.apAdjust !== undefined) {
+    apValue.value = 2 + cache.apAdjust
+  }
+  if (cache.npAdjust !== undefined) {
+    npValue.value = 0 + cache.npAdjust
+  }
+  if (cache.epAdjust !== undefined) {
+    epValue.value = epInitialValue.value + cache.epAdjust
+  }
+  
+  // 恢复护甲等级
+  if (cache.armor1 !== undefined) armorValues.value.armor1 = cache.armor1
+  if (cache.armor2 !== undefined) armorValues.value.armor2 = cache.armor2
+  if (cache.armor3 !== undefined) armorValues.value.armor3 = cache.armor3
+  
+  // 恢复 HP 调整
+  hpAdjust.value = cache.hpAdjust || 0
+  
+  // 恢复安全值调整
+  physicalManualAdjust.value = cache.physicalAdjust || 0
+  electronicManualAdjust.value = cache.electronicAdjust || 0
+  
+  // 恢复伤痕
+  if (cache.scars && cache.scars.length > 0) {
+    scars.value = cache.scars
+  }
+  
+  console.log('[M16] 从缓存恢复数据:', cache)
+})
+
+// 监听变化触发保存
+watch([
+  apValue,
+  npValue,
+  epValue,
+  armorValues,
+  hpAdjust,
+  physicalManualAdjust,
+  electronicManualAdjust,
+  scars
+], () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
+
+// 注册本地数据到全局缓存管理器
+onMounted(() => {
+  if (window.liflowerCache) {
+    window.liflowerCache.registerM16({
+      apAdjust: computed(() => apValue.value - 2),
+      npAdjust: computed(() => npValue.value - 0),
+      epAdjust: computed(() => epValue.value - epInitialValue.value),
+      armor1: computed(() => armorValues.value.armor1),
+      armor2: computed(() => armorValues.value.armor2),
+      armor3: computed(() => armorValues.value.armor3),
+      hpAdjust,
+      physicalAdjust: physicalManualAdjust,
+      electronicAdjust: electronicManualAdjust,
+      scars
+    })
+    console.log('[M16] 已注册到缓存管理器')
+  } else {
+    console.warn('[M16] window.liflowerCache 未定义')
+  }
+})
 </script>
 
 <style lang="scss" scoped>

@@ -195,7 +195,7 @@ const parsedTalentsOutput = computed(() => {
       result += ` ${contentPart}`
     }
     if (tipPart) {
-      result += ` <TipButton level="1" content="${tipPart.replace(/"/g, '&quot;')}" />`
+      result += ` <TipButton :level="1" content="${tipPart.replace(/"/g, '&quot;')}" />`
     }
     return result
   })

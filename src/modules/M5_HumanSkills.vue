@@ -30,11 +30,12 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue'
+import { computed, watch, ref, onMounted } from 'vue'
 import { useCharacterStore } from '@/stores/character'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import { useModifiers } from '@/composables/useModifiers'
+import { getM5Cache, SKILL_KEYS } from '@/utils/cacheManager'
 import AttributeAllocator from '@/components/AttributeAllocator.vue'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 import skillsData from '@/data/skills.json'
@@ -436,6 +437,28 @@ useAutoOutput({
     return modifiers
   })
 })
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM5Cache()
+  if (!cache || !cache.skills || !Array.isArray(cache.skills)) return
+  
+  // 从数组恢复技能值（不验证上限，让玩家自己处理）
+  const newSkills = {}
+  SKILL_KEYS.forEach((key, index) => {
+    newSkills[key] = cache.skills[index] || 0
+  })
+  characterStore.updateSkills(newSkills)
+  
+  console.log('[M5] 从缓存恢复技能:', newSkills)
+})
+
+// 监听技能变化触发保存
+watch(characterStore.skills, () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
 </script>
 
 <style lang="scss" scoped>

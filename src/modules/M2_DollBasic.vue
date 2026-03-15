@@ -34,7 +34,7 @@
             @change="onEnterpriseChange"
             style="flex: 1"
           />
-          <TipButton level="3" :content="currentEnterpriseFullDesc">
+          <TipButton :level="3" :content="currentEnterpriseFullDesc">
             
           </TipButton>
         </div>
@@ -59,7 +59,7 @@
             @change="onHardwareChange"
             style="flex: 1"
           />
-          <TipButton level="3" :content="currentHardwareFullDesc">
+          <TipButton :level="3" :content="currentHardwareFullDesc">
 
           </TipButton>
         </div>
@@ -99,7 +99,7 @@
                     :options="availableTraits"
                     style="flex: 1"
                   />
-                  <TipButton level="1" :content="trait.description" />
+                  <TipButton :level="1" :content="trait.description" />
                 </div>
                 <!-- 自由特质：显示自定义输入框 -->
                 <div v-if="isCustomTrait(trait.id)" class="custom-trait-input">
@@ -112,7 +112,7 @@
                   />
                 </div>
                 <!-- 普通特质：显示效果描述 -->
-                <div v-else-if="trait.effect" class="cyber-effect-text trait-effect" v-html="parseEffectText(trait.effect)">
+                <div v-else-if="getTraitEffect(trait.id)" class="cyber-effect-text trait-effect" v-html="parseEffectText(getTraitEffect(trait.id))">
                 </div>
               </div>
             </div>
@@ -165,10 +165,9 @@ onMounted(() => {
   }
 
   const cache = getM2Cache()
-  if (!cache) return
-
+  
   // 恢复硬件规格
-  if (cache.hardwareSpecId) {
+  if (cache && cache.hardwareSpecId) {
     const specName = getHardwareSpecNameById(cache.hardwareSpecId)
     if (specName) {
       characterStore.hardwareSpec = specName
@@ -177,7 +176,7 @@ onMounted(() => {
   }
 
   // 恢复生产企业
-  if (cache.manufacturerId) {
+  if (cache && cache.manufacturerId) {
     const mfrName = getManufacturerNameById(cache.manufacturerId)
     if (mfrName) {
       characterStore.manufacturer = mfrName
@@ -187,12 +186,12 @@ onMounted(() => {
   }
 
   // 恢复阐述
-  if (cache.description) {
+  if (cache && cache.description) {
     localData.description = cache.description
   }
 
   // 恢复特质
-  if (cache.traits && Array.isArray(cache.traits)) {
+  if (cache && cache.traits && Array.isArray(cache.traits) && cache.traits.length > 0) {
     cache.traits.forEach((t, index) => {
       if (localData.traits[index]) {
         localData.traits[index].id = t.id || ''
@@ -201,6 +200,13 @@ onMounted(() => {
         updateTraitInfo(index, t.id)
       }
     })
+  } else {
+    // 缓存为空时重置为初始状态
+    localData.traits = [
+      { id: "", description: "", effect: "", customEffect: "" },
+      { id: "", description: "", effect: "", customEffect: "" }
+    ]
+    console.log('[M2] 缓存为空，重置特质')
   }
 })
 
@@ -318,16 +324,9 @@ const getTraitEffect = (traitId) => {
   return trait ? trait.effect : ''
 }
 
-// 监听特质选择变化，更新描述和效果，并同步到 store
+// 监听特质选择变化，同步到 store
 localData.traits.forEach((trait, index) => {
   watch(() => trait.id, (newId) => {
-    trait.description = getTraitDescription(newId)
-    trait.effect = getTraitEffect(newId)
-    // 如果是自由特质，清空效果，使用自定义输入
-    if (isCustomTrait(newId)) {
-      trait.effect = ''
-      trait.customEffect = ''
-    }
     // 同步到 store（人形和人类共用 selectedTraits）
     characterStore.setTrait(index, newId)
   })

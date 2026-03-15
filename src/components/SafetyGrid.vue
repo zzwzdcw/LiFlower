@@ -60,6 +60,10 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  manualAdjust: {
+    type: Number,
+    default: 0
+  },
   label: {
     type: String,
     default: '安全值'
@@ -68,8 +72,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:manualAdjust'])
 
-// 手动调整值
-const manualAdjust = ref(0)
+// 手动调整值（响应外部 prop 变化）
+const manualAdjust = ref(props.manualAdjust)
+
+// 监听外部 manualAdjust prop 变化
+watch(() => props.manualAdjust, (newVal) => {
+  manualAdjust.value = newVal
+})
 
 // 锁定状态（默认锁定）
 const isLocked = ref(true)
@@ -112,6 +121,11 @@ const handleClick = (n) => {
 const onManualChange = () => {
   emit('update:manualAdjust', manualAdjust.value)
 }
+
+// 监听内部 manualAdjust 变化，同步到外部
+watch(manualAdjust, (newVal) => {
+  emit('update:manualAdjust', newVal)
+})
 
 const toggleLock = () => {
   isLocked.value = !isLocked.value

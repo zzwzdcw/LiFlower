@@ -23,6 +23,7 @@ import { clearCache } from '@/utils/cacheManager'
 const characterStore = useCharacterStore()
 
 const confirmClear = () => {
+  console.log('===== 开始清除缓存 =====')
   ElMessageBox.confirm(
     '确定要清除所有本地数据吗？此操作不可恢复！',
     '警告',
@@ -32,15 +33,37 @@ const confirmClear = () => {
       type: 'warning',
     }
   ).then(() => {
-    // 清除 M0~M2 缓存
+    console.log('用户确认清除')
+    console.log('清除前 localStorage:', localStorage.getItem('liflower-cache-v1'))
+    // 设置清除标志，禁止保存
+    if (window.liflowerCache) {
+      window.liflowerCache._isClearingCache = true
+    }
+    // 清除 localStorage 缓存
     clearCache()
+    console.log('清除后 localStorage:', localStorage.getItem('liflower-cache-v1'))
+    // 清除模块输出数据
+    localStorage.removeItem('liflower-module-outputs')
+    // 清除 window.liflowerCache 上的引用
+    if (window.liflowerCache) {
+      window.liflowerCache._m1LocalData = null
+      window.liflowerCache._m2LocalData = null
+      window.liflowerCache._m6LocalData = null
+      window.liflowerCache._m7LocalData = null
+      window.liflowerCache._m9LocalData = null
+      window.liflowerCache._m16LocalData = null
+      window.liflowerCache._m17LocalData = null
+      window.liflowerCache._m18LocalData = null
+      window.liflowerCache._m19LocalData = null
+      window.liflowerCache._m20LocalData = null
+    }
     // 使用 store 的 resetCharacter 清除所有数据
     characterStore.resetCharacter()
-    ElMessage.success('缓存已清除，页面将刷新')
-    setTimeout(() => {
-      window.location.reload()
-    }, 1500)
+    console.log('===== 清除完成，立即刷新 =====')
+    // 立即刷新，不要等待
+    window.location.reload()
   }).catch(() => {
+    console.log('用户取消清除')
     ElMessage.info('已取消')
   })
 }

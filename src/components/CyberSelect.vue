@@ -42,6 +42,11 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { ArrowDown, CircleClose } from '@element-plus/icons-vue';
 
+// 禁用自动继承 attributes
+defineOptions({
+  inheritAttrs: false
+})
+
 const props = defineProps({
   modelValue: [String, Number],
   placeholder: {

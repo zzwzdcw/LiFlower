@@ -28,17 +28,19 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { useCharacterStore } from '@/stores/character'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
 import { useAutoOutput } from '@/composables/useModuleOutput'
 import { useModifiers } from '@/composables/useModifiers'
+import { getM3Cache } from '@/utils/cacheManager'
 import AttributeAllocator from '@/components/AttributeAllocator.vue'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 
 // 导入属性数据
 import attributeDataJson from '@/data/基本属性.json'
 import hardwareSpecData from '@/data/硬件规格.json'
+import { ATTRIBUTE_KEYS } from '@/utils/cacheManager'
 
 // 使用 store
 const characterStore = useCharacterStore()
@@ -267,6 +269,28 @@ useAutoOutput({
     return modifiers
   })
 })
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM3Cache()
+  if (!cache || !cache.attributes || !Array.isArray(cache.attributes)) return
+  
+  // 从数组恢复属性值（不验证上限，让玩家自己处理）
+  const newAttributes = {}
+  ATTRIBUTE_KEYS.forEach((key, index) => {
+    newAttributes[key] = cache.attributes[index] || 0
+  })
+  characterStore.updateDollAttributes(newAttributes)
+  
+  console.log('[M3] 从缓存恢复属性:', newAttributes)
+})
+
+// 监听属性变化触发保存
+watch(characterStore.dollAttributes, () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
 </script>
 
 <style lang="scss" scoped>

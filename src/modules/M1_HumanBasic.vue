@@ -32,7 +32,7 @@
             :options="backgroundOptions"
             style="flex: 1"
           />
-          <TipButton level="3" :content="currentBackgroundDesc">
+          <TipButton :level="3" :content="currentBackgroundDesc">
             
           </TipButton>
         </div>
@@ -75,7 +75,7 @@
                     :options="availableTraits"
                     style="flex: 1"
                   />
-                  <TipButton level="1" :content="trait.description" />
+                  <TipButton :level="1" :content="trait.description" />
                 </div>
                 <!-- 自由特质：显示自定义输入框 -->
                 <div v-if="isCustomTrait(trait.id)" class="custom-trait-input">
@@ -88,7 +88,7 @@
                   />
                 </div>
                 <!-- 普通特质：显示效果描述 -->
-                <div v-else-if="trait.effect" class="cyber-effect-text trait-effect" v-html="parseEffectText(trait.effect)">
+                <div v-else-if="getTraitEffect(trait.id)" class="cyber-effect-text trait-effect" v-html="parseEffectText(getTraitEffect(trait.id))">
                 </div>
               </div>
             </div>
@@ -139,20 +139,19 @@ onMounted(() => {
   }
 
   const cache = getM1Cache()
-  if (!cache) return
-
+  
   // 恢复出身
-  if (cache.backgroundId) {
+  if (cache && cache.backgroundId) {
     characterStore.humanBackground = cache.backgroundId
   }
 
   // 恢复阐述
-  if (cache.description) {
+  if (cache && cache.description) {
     localData.description = cache.description
   }
 
   // 恢复特质
-  if (cache.traits && Array.isArray(cache.traits)) {
+  if (cache && cache.traits && Array.isArray(cache.traits) && cache.traits.length > 0) {
     cache.traits.forEach((t, index) => {
       if (localData.traits[index]) {
         localData.traits[index].id = t.id || ''
@@ -161,6 +160,12 @@ onMounted(() => {
         updateTraitInfo(index, t.id)
       }
     })
+  } else {
+    // 缓存为空时重置为初始状态
+    localData.traits = [
+      { id: "", description: "", effect: "", customEffect: "" },
+      { id: "", description: "", effect: "", customEffect: "" }
+    ]
   }
 })
 
@@ -279,6 +284,9 @@ const selectedBackground = computed({
   get: () => characterStore.humanBackground || "",
   set: (value) => {
     characterStore.humanBackground = value
+    // 选择出身后立即触发保存
+    console.log('[M1] 选择出身，触发保存:', value)
+    window.dispatchEvent(new CustomEvent('liflower-save-cache'))
   }
 })
 
@@ -333,19 +341,9 @@ const getTraitEffect = (traitId) => {
   return trait ? trait.effect : ''
 }
 
-// 监听特质选择变化，更新描述和效果，并同步到 store
+// 监听特质选择变化，同步到 store
 localData.traits.forEach((trait, index) => {
   watch(() => trait.id, (newId) => {
-    if (isCustomTrait(newId)) {
-      // 自由特质：清空预设效果，保留自定义文本
-      trait.description = getTraitDescription(newId)
-      trait.effect = ''
-    } else {
-      // 普通特质：更新描述和效果，清空自定义文本
-      trait.description = getTraitDescription(newId)
-      trait.effect = getTraitEffect(newId)
-      trait.customEffect = ''
-    }
     // 同步到 store
     characterStore.setTrait(index, newId)
   })

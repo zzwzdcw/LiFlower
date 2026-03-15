@@ -11,7 +11,7 @@
         placeholder="装备名称"
         class="cyber-input-short name-input"
       />
-      <TipButton level="2" :content="typeTipContent" :show-icon="false">
+      <TipButton :level="2" :content="typeTipContent" :show-icon="false">
         <CyberSelect
           v-model="localType"
           :options="typeOptions"
@@ -19,7 +19,7 @@
           class="type-select"
         />
       </TipButton>
-      <TipButton level="2" :content="levelTipContent" :show-icon="false">
+      <TipButton :level="2" :content="levelTipContent" :show-icon="false">
         <div class="number-input-wrapper">
           <input
             :value="displayLevel"

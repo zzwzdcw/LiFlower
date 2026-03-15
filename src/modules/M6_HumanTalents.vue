@@ -52,8 +52,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAutoOutput } from '@/composables/useModuleOutput'
+import { getM6Cache } from '@/utils/cacheManager'
 import TalentItem from '@/components/TalentItem.vue'
 import CyberBrainItem from '@/components/CyberBrainItem.vue'
 import ModuleHeader from '@/components/ModuleHeader.vue'
@@ -252,6 +253,63 @@ useAutoOutput({
   activeTalentCount: computed(() => talentsOutput.value.length),
   totalTalentSlots: computed(() => talents.value.length),
   hasCyberBrain: computed(() => isCyberBrainActive.value)
+})
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM6Cache()
+
+  // 恢复专长列表（逐个修改元素，保持引用不变）
+  if (cache && cache.talents && Array.isArray(cache.talents) && cache.talents.length > 0) {
+    // 先调整数组长度
+    while (talents.value.length < cache.talents.length) {
+      talents.value.push({ name: '', skill: '', limitation: '', description: '' })
+    }
+    // 逐个修改元素
+    cache.talents.forEach((t, index) => {
+      if (talents.value[index]) {
+        talents.value[index].name = t.name || ''
+        talents.value[index].skill = t.skill || ''
+        talents.value[index].limitation = t.limitation || ''
+        talents.value[index].description = t.description || ''
+      }
+    })
+    console.log('[M6] 从缓存恢复专长:', talents.value)
+  } else {
+    // 缓存为空时重置为初始状态
+    talents.value = [
+      { name: '', skill: '', limitation: '', description: '' },
+      { name: '', skill: '', limitation: '', description: '' }
+    ]
+    isCyberBrainActive.value = false
+    console.log('[M6] 缓存为空，重置专长')
+  }
+
+  // 恢复电子脑状态
+  if (cache && cache.isCyberBrainActive) {
+    isCyberBrainActive.value = true
+    console.log('[M6] 从缓存恢复电子脑：激活')
+  }
+})
+
+// 监听变化触发保存
+watch([talents, isCyberBrainActive], () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
+
+// 注册本地数据到全局缓存管理器
+onMounted(() => {
+  if (window.liflowerCache) {
+    window.liflowerCache.registerM6({
+      talents,
+      isCyberBrainActive
+    })
+    console.log('[M6] 已注册到缓存管理器')
+  } else {
+    console.warn('[M6] window.liflowerCache 未定义')
+  }
 })
 </script>
 

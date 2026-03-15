@@ -41,15 +41,27 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import TipButton from '@/components/TipButton.vue'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 import { useCharacterStore } from '@/stores/character'
 import { useAutoOutput } from '@/composables/useModuleOutput'
-import { getM0Cache } from '@/utils/cacheManager'
+import { getM0Cache, importCharacterCode } from '@/utils/cacheManager'
 
 const characterStore = useCharacterStore()
 const importCode = ref('')
+
+// 本地数据引用（从 App.vue 获取）
+const getM1Data = () => window.liflowerCache?._m1LocalData || null
+const getM2Data = () => window.liflowerCache?._m2LocalData || null
+const getM6Data = () => window.liflowerCache?._m6LocalData || null
+const getM7Data = () => window.liflowerCache?._m7LocalData || null
+const getM9Data = () => window.liflowerCache?._m9LocalData || null
+const getM16Data = () => window.liflowerCache?._m16LocalData || null
+const getM17Data = () => window.liflowerCache?._m17LocalData || null
+const getM18Data = () => window.liflowerCache?._m18LocalData || null
+const getM19Data = () => window.liflowerCache?._m19LocalData || null
+const getM20Data = () => window.liflowerCache?._m20LocalData || null
 
 // 使用计算属性包装 store 中的值，使其成为响应式 ref
 const characterName = computed({
@@ -76,13 +88,41 @@ watch(() => characterStore.characterName, () => {
   window.dispatchEvent(new CustomEvent('liflower-save-cache'))
 })
 
+// 导入角色代码
 const importCharacter = () => {
   if (!importCode.value.trim()) {
     ElMessage.warning('请先粘贴角色代码')
     return
   }
-  // TODO: 实现导入逻辑
-  ElMessage.success('角色导入成功')
+  
+  ElMessageBox.confirm(
+    '导入角色将覆盖当前所有数据，是否继续？',
+    '警告',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(() => {
+    const success = importCharacterCode(
+      importCode.value,
+      characterStore,
+      getM1Data(), getM2Data(), getM6Data(), getM7Data(), getM9Data(),
+      getM16Data(), getM17Data(), getM18Data(), getM19Data(), getM20Data()
+    )
+    
+    if (success) {
+      ElMessage.success('角色导入成功，页面将刷新')
+      // 先触发保存，将数据写入 localStorage
+      window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+      // 立即刷新，不要等待
+      window.location.reload()
+    } else {
+      ElMessage.error('角色导入失败，请检查代码格式')
+    }
+  }).catch(() => {
+    // 取消导入
+  })
 }
 </script>
 

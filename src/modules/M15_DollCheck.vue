@@ -139,8 +139,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useModuleOutputsStore } from '@/stores/moduleOutputs'
+import { getM15Cache } from '@/utils/cacheManager'
 import ModuleHeader from '@/components/ModuleHeader.vue'
 import CombatEntry from '@/components/CombatEntry.vue'
 import combatRules from '@/data/combatRules.json'
@@ -373,6 +374,55 @@ const computedCheckEntries = computed(() => {
       noAttributeBonus: [4, 11, 12, 13, 14, 15, 16].includes(parseInt(entry.skillId))
     }
   })
+})
+
+// ==================== 缓存恢复和保存 ====================
+
+// 从缓存恢复
+onMounted(() => {
+  const cache = getM15Cache()
+  if (!cache) return
+  
+  // 恢复战斗数据工具加值
+  if (cache.combatToolBonuses && Array.isArray(cache.combatToolBonuses)) {
+    cache.combatToolBonuses.forEach((value, index) => {
+      if (combatEntries.value[index]) {
+        combatEntries.value[index].toolBonus = value
+      }
+    })
+    console.log('[M15] 从缓存恢复战斗数据工具加值:', cache.combatToolBonuses)
+  }
+  
+  // 恢复检定数据工具加值
+  if (cache.checkToolBonuses && Array.isArray(cache.checkToolBonuses)) {
+    cache.checkToolBonuses.forEach((value, index) => {
+      if (checkEntries.value[index]) {
+        checkEntries.value[index].toolBonus = value
+      }
+    })
+    console.log('[M15] 从缓存恢复检定数据工具加值:', cache.checkToolBonuses)
+  }
+})
+
+// 监听工具加值变化触发保存
+watch(() => [
+  combatEntries.value.map(e => e.toolBonus),
+  checkEntries.value.map(e => e.toolBonus)
+], () => {
+  window.dispatchEvent(new CustomEvent('liflower-save-cache'))
+}, { deep: true })
+
+// 注册本地数据到全局缓存管理器
+onMounted(() => {
+  if (window.liflowerCache) {
+    window.liflowerCache.registerM15({
+      combatToolBonuses: computed(() => combatEntries.value.map(e => e.toolBonus)),
+      checkToolBonuses: computed(() => checkEntries.value.map(e => e.toolBonus))
+    })
+    console.log('[M15] 已注册到缓存管理器')
+  } else {
+    console.warn('[M15] window.liflowerCache 未定义')
+  }
 })
 </script>
 
