@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- [模块 00: 基础设置与CSS排版样式] -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《锂之花》终端档案录入系统</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0c; --panel-bg: #121216; --main-text: #c0c0c0;
+            --accent-green: #00ff9d; --accent-red: #ff3366; --border-color: #333;
+        }
+        body {
+            background-color: var(--bg-color); color: var(--main-text);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px; max-width: 800px; margin: 0 auto; line-height: 1.6;
+        }
+        h1, h2, h3 { color: var(--accent-green); margin-top: 0; }
+        .section-box {
+            border: 1px solid var(--border-color); background-color: var(--panel-bg);
+            padding: 15px; margin-bottom: 20px; border-left: 4px solid var(--accent-green);
+        }
+        .input-row { margin-bottom: 12px; display: flex; flex-direction: column; }
+        label { margin-bottom: 5px; font-weight: bold; color: #fff; }
+        input, select, textarea {
+            background-color: #000; color: #fff; border: 1px solid #444;
+            padding: 8px; font-family: inherit; font-size: 14px; width: 100%; box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-green); outline: none; }
+        button {
+            background-color: #222; color: var(--accent-green); border: 1px solid var(--accent-green);
+            padding: 10px 15px; cursor: pointer; font-family: inherit; font-weight: bold;
+            margin-top: 10px; width: 100%; transition: all 0.2s;
+        }
+        button:hover { background-color: var(--accent-green); color: #000; }
+        .btn-red { color: var(--accent-red); border-color: var(--accent-red); }
+        .btn-red:hover { background-color: var(--accent-red); color: #fff; }
+        .hidden { display: none; }
+        
+        /* ⬇️ 悬浮提示框 (Tooltip) 样式 ⬇️ */
+        .cyber-tooltip {
+            position: relative; display: inline-block; color: var(--accent-green);
+            cursor: help; font-weight: bold; margin-left: 8px; font-size: 0.9em;
+        }
+        .cyber-tooltip .tooltip-content {
+            visibility: hidden; width: 280px; background-color: #0d1117; color: #c0c0c0;
+            text-align: left; border: 1px solid var(--accent-green); padding: 12px;
+            position: absolute; z-index: 100; top: 130%; left: 50%; transform: translateX(-50%);
+            opacity: 0; transition: opacity 0.2s; font-size: 12px; font-weight: normal;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3); pointer-events: none;
+        }
+        .cyber-tooltip:hover .tooltip-content, .cyber-tooltip:active .tooltip-content {
+            visibility: visible; opacity: 1;
+        }
+        .tooltip-content ul { padding-left: 15px; margin: 5px 0 0 0; }
+        .tooltip-content li { margin-bottom: 6px; }
+
+        /* ⬇️ 桌游涂卡指示灯格子样式 (修复了消失的问题) ⬇️ */
+        .stat-row { 
+            display: flex; align-items: center; margin-bottom: 8px; 
+            background: #0a0a0c; padding: 5px 10px; border: 1px solid #222;
+        }
+        .stat-name { width: 90px; color: #fff; font-size: 14px; font-weight: bold; }
+        .stat-dots { display: flex; gap: 6px; flex-grow: 1; }
+        .dot { 
+            width: 18px; height: 18px; border: 1px solid var(--accent-green); 
+            cursor: pointer; background: #000; transition: all 0.1s;
+            flex-shrink: 0; /* 确保格子不会被排版挤压消失 */
+        }
+        .dot.filled { 
+            background: var(--accent-green); box-shadow: 0 0 8px rgba(0,255,157,0.6); 
+        }
+        .dot:hover { border-color: #fff; }
+        .stat-counter { margin-left: auto; font-size: 12px; color: #888; }
+        .warning-text { color: var(--accent-red); font-weight: bold; }
+    </style>
+    <!-- [模块 00 结束] -->
+</head>
+<body>
+
+    <!-- [模块 01: 初始引导区] -->
+    <div class="section-box" id="module-01">
+        <h1>[SYS.INIT] 锂之花终端</h1>
+        <div class="input-row">
+            <label>▶ 注册序列号 (ID/姓名) :</label>
+            <input type="text" id="char_name" placeholder="输入角色名称..." oninput="autoSave()">
+        </div>
+        <div class="input-row">
+            <label>▶ 实体类型验证 :</label>
+            <select id="char_type" onchange="toggleMainSections(); autoSave();">
+                <option value="none">等待选择...</option>
+                <option value="human">人类 (Anthropos)</option>
+                <option value="anthroform">人形 (Anthroform)</option>
+            </select>
+        </div>
+    </div>
+    <!-- [模块 01 结束] -->
+
+    <!-- [模块 02-0: 人类专属录入区 (外壳)] -->
+    <div class="section-box hidden" id="module-02-human">
+        <h2>[人类档案录入]
+            <span class="cyber-tooltip">[?]
+                <span class="tooltip-content" style="width: 300px;">
+                    <strong style="color: #fff;">▶ 人类特征：</strong>
+                    <ul>
+                        <li><strong style="color: #00ff9d;">生物修复：</strong>伤势自动恢复但缓慢。意识无法备份。</li>
+                        <li><strong style="color: #00ff9d;">神经学习：</strong>经历中获得经验，本能快于意识。</li>
+                        <li><strong style="color: #00ff9d;">人权身份：</strong>享有完整权利，可拥有财产。</li>
+                    </ul>
+                </span>
+            </span>
+        </h2>
+
+        <!-- [模块 02-1: 人类起源与阶级] -->
+        <div class="input-row" style="margin-bottom: 20px;">
+            <label>▶ 起源/阶级:</label>
+            <div style="display: flex; align-items: center;">
+                <select id="human_origin" onchange="updateHumanOrigin(); autoSave();" style="flex-grow: 1;">
+                    <option value="none">请选择出身...</option>
+                    <option value="meaningless">无意义一代</option>
+                    <option value="screw">螺丝钉</option>
+                    <option value="veteran">老兵</option>
+                    <option value="bureaucrat">公司官僚</option>
+                    <option value="scavenger">战区拾荒者</option>
+                    <option value="techworker">技术堡垒工作者</option>
+                </select>
+                <span class="cyber-tooltip" style="margin-left: 10px; font-size: 1.2em;">[?] 
+                    <span class="tooltip-content" id="human_origin_lore" style="width: 350px; right: 0; left: auto; transform: none;">
+                        请先在左侧选择你的起源...
+                    </span>
+                </span>
+            </div>
+            <div id="human_origin_desc" style="color: #00ff9d; font-size: 13px; margin-top: 8px; padding: 8px; border-left: 3px solid #00ff9d; background: #002211; display: none;"></div>
+        </div>
+
+        <script>
+            // 背景故事字典库
+            const humanOriginData = {
+                "none": { desc: "", lore: "请先在左侧选择你的起源以加载档案。" },
+                "meaningless": {
+                    desc: "【能力】你可以将技能点数 1：1 兑换为自身属性点，上限 5 点，视为义体改造。<br>【许可】民用级许可",
+                    lore: "<span style='color:#00ff9d;'>#</span> 从学校绩点不如其他人开始，你就走向了一辈子不被社会需要，只需领取UBI活着的道路...<br><br><span style='color:#00ff9d;'>#</span> 也有许多人意识到了这种空虚...你想要获得力量，哪怕摔得头破血流。"
+                },
+                "screw": {
+                    desc: "【能力】你可以将技能点数 1：1 兑换为人形属性点，上限 5 点，视为契约购买。<br>【许可】民用级许可",
+                    lore: "<span style='color:#00ff9d;'>#</span> 你有工作，辛苦但是让你过得比UBI群体更加富足...<br><br><span style='color:#00ff9d;'>#</span> 或许你有一天忽然下定了决心，辞掉了工作，去黑市上购买最好的人形零件。"
+                },
+                "veteran": {
+                    desc: "【能力】枪械技能+2，对尖端武器的辨识和防御检定具有优势。<br>【许可】民用级许可",
+                    lore: "<span style='color:#00ff9d;'>#</span> 战争是谎言。这个时代再也没有什么值得流血的信仰。<br><br><span style='color:#00ff9d;'>#</span> 但是对你来说，战争是真实。"
+                },
+                "bureaucrat": {
+                    desc: "【能力】交涉+2，拥有一张特权搜查证。<br>【许可】警用级许可",
+                    lore: "<span style='color:#00ff9d;'>#</span> 这个时代资本的主题是自控发展，而官僚的主题是解放思想。<br><br><span style='color:#00ff9d;'>#</span> 和公司狗不同的是，你有执法权；和官僚不同的是，你没有什么意识形态包袱。"
+                },
+                "scavenger": {
+                    desc: "【能力】隐匿+2，在强干扰环境仍有办法建立基础通讯。<br>【许可】警用级许可",
+                    lore: "<span style='color:#00ff9d;'>#</span> 世界上的战区有两种...遍地开花的可持续战争制造了相当多的无人富饶区。<br><br><span style='color:#00ff9d;'>#</span> 前去战区拾荒是个危险而赚钱的生意。"
+                },
+                "techworker": {
+                    desc: "【能力】操控+2，对【黑箱】词条的尖端武装维修有优势。<br>【许可】民用级许可",
+                    lore: "<span style='color:#00ff9d;'>#</span> 你处于一个奇观一样的技术堡垒中，并在此工作了相当长时间。"
+                }
+            };
+            function updateHumanOrigin() {
+                const selected = document.getElementById('human_origin').value;
+                const descBox = document.getElementById('human_origin_desc');
+                document.getElementById('human_origin_lore').innerHTML = humanOriginData[selected].lore;
+                if (selected === "none") { descBox.style.display = "none"; } 
+                else { descBox.style.display = "block"; descBox.innerHTML = humanOriginData[selected].desc; }
+            }
+        </script>
+        <!-- [模块 02-1 结束] -->
+
+        <!-- [模块 02-2: 人类属性] -->
+        <h3 style="margin-top: 20px; font-size: 16px;">▶ 基础属性 (最高+5，人类默认+0)</h3>
+        
+        <div class="stat-row">
+            <span class="stat-name">结构</span>
+            <div class="stat-dots" id="dots_h_attr_str">
+                <div class="dot" onclick="setDot('h_attr_str', 1)"></div><div class="dot" onclick="setDot('h_attr_str', 2)"></div>
+                <div class="dot" onclick="setDot('h_attr_str', 3)"></div><div class="dot" onclick="setDot('h_attr_str', 4)"></div><div class="dot" onclick="setDot('h_attr_str', 5)"></div>
+            </div>
+            <span class="cyber-tooltip">[?]<span class="tooltip-content">决定基础HP上限。</span></span>
+            <input type="hidden" id="h_attr_str" value="0" class="human-attr-input">
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">出力</span>
+            <div class="stat-dots" id="dots_h_attr_pow">
+                <div class="dot" onclick="setDot('h_attr_pow', 1)"></div><div class="dot" onclick="setDot('h_attr_pow', 2)"></div>
+                <div class="dot" onclick="setDot('h_attr_pow', 3)"></div><div class="dot" onclick="setDot('h_attr_pow', 4)"></div><div class="dot" onclick="setDot('h_attr_pow', 5)"></div>
+            </div>
+            <span class="cyber-tooltip">[?]<span class="tooltip-content">决定近战攻击威力上限。</span></span>
+            <input type="hidden" id="h_attr_pow" value="0" class="human-attr-input">
+        </div>
+        <!-- [模块 02-2 结束] -->
+
+        <!-- [模块 02-3: 人类技能] -->
+        <h3 style="margin-top: 20px; font-size: 16px; display: flex; justify-content: space-between;">
+            <span>▶ 专长技能</span>
+            <span class="stat-counter" id="skill_point_counter">已用: <span id="used_skills">0</span> / 15</span>
+        </h3>
+        
+        <div class="stat-row">
+            <span class="stat-name">体术</span>
+            <div class="stat-dots" id="dots_h_skill_melee">
+                <div class="dot" onclick="setDot('h_skill_melee', 1)"></div><div class="dot" onclick="setDot('h_skill_melee', 2)"></div>
+                <div class="dot" onclick="setDot('h_skill_melee', 3)"></div><div class="dot" onclick="setDot('h_skill_melee', 4)"></div><div class="dot" onclick="setDot('h_skill_melee', 5)"></div>
+            </div>
+            <span class="cyber-tooltip">[?]<span class="tooltip-content">近战格斗，决定近战武器加值。提供额外物理安全值。</span></span>
+            <input type="hidden" id="h_skill_melee" value="0" class="human-skill-input">
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">闪避</span>
+            <div class="stat-dots" id="dots_h_skill_dodge">
+                <div class="dot" onclick="setDot('h_skill_dodge', 1)"></div><div class="dot" onclick="setDot('h_skill_dodge', 2)"></div>
+                <div class="dot" onclick="setDot('h_skill_dodge', 3)"></div><div class="dot" onclick="setDot('h_skill_dodge', 4)"></div><div class="dot" onclick="setDot('h_skill_dodge', 5)"></div>
+            </div>
+            <span class="cyber-tooltip">[?]<span class="tooltip-content">直接决定防御加值。提供额外物理安全值。</span></span>
+            <input type="hidden" id="h_skill_dodge" value="0" class="human-skill-input">
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">枪械</span>
+            <div class="stat-dots" id="dots_h_skill_gun">
+                <div class="dot" onclick="setDot('h_skill_gun', 1)"></div><div class="dot" onclick="setDot('h_skill_gun', 2)"></div>
+                <div class="dot" onclick="setDot('h_skill_gun', 3)"></div><div class="dot" onclick="setDot('h_skill_gun', 4)"></div><div class="dot" onclick="setDot('h_skill_gun', 5)"></div>
+            </div>
+            <span class="cyber-tooltip">[?]<span class="tooltip-content">直接决定轻武器射击加值。</span></span>
+            <input type="hidden" id="h_skill_gun" value="0" class="human-skill-input">
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">破解</span>
+            <div class="stat-dots" id="dots_h_skill_hack">
+                <div class="dot" onclick="setDot('h_skill_hack', 1)"></div><div class="dot" onclick="setDot('h_skill_hack', 2)"></div>
+                <div class="dot" onclick="setDot('h_skill_hack', 3)"></div><div class="dot" onclick="setDot('h_skill_hack', 4)"></div><div class="dot" onclick="setDot('h_skill_hack', 5)"></div>
+            </div>
+            <span class="cyber-tooltip">[?]<span class="tooltip-content">决定骇入能力，提供额外电子安全值。</span></span>
+            <input type="hidden" id="h_skill_hack" value="0" class="human-skill-input">
+        </div>
+        <!-- [模块 02-3 结束] -->
+    </div>
+    <!-- [模块 02-0 结束] -->
+
+    <!-- [模块 03: 人形专属录入区] -->
+    <div class="section-box hidden" id="module-03-anthro">
+        <h2>[人形档案录入]
+            <span class="cyber-tooltip">[?] 
+                <span class="tooltip-content">
+                    <strong style="color: #fff;">▶ 人形 (Anthroform) 特征：</strong>
+                    <ul>
+                        <li><strong style="color: #00ff9d;">机械修理：</strong>伤势无法自动恢复，但可以通过维修焕然一新。核心不毁即不死。</li>
+                        <li><strong style="color: #00ff9d;">模块能力：</strong>可通过更换技能卡/软件升级快速获得新技能。</li>
+                        <li><strong style="color: #00ff9d;">私有资产：</strong>无主人将被禁用大部分功能，不能伤害主人。</li>
+                    </ul>
+                </span>
+            </span>
+        </h2>
+        <p style="color: #888;">* 提示：属性点受规格限制，最高+4 (实验级除外)。</p>
+        <div class="input-row">
+            <label>企业血统 (决定特质):</label>
+            <select id="anthro_corp" onchange="autoSave()">
+                <option value="none">常规组装厂 (无特质)</option>
+                <option value="snow_wolf">雪狼设计局 (HP+4)</option>
+            </select>
+        </div>
+        <div class="input-row">
+            <label>结构属性 (+0~+5):</label>
+            <input type="number" id="anthro_attr_structure" value="0" min="0" max="5" oninput="autoSave()">
+        </div>
+        <div class="input-row">
+            <label>运动属性 (+0~+5):</label>
+            <input type="number" id="anthro_attr_motion" value="0" min="0" max="5" oninput="autoSave()">
+        </div>
+    </div>
+    <!-- [模块 03 结束] -->
+
+    <!-- [模块 04 & 05: 衍生区与保存区] -->
+    <div class="section-box hidden" id="module-04-derived" style="border-left-color: #f1c40f;">
+        <h2 style="color: #f1c40f;">[自动计算与校验面板]</h2>
+        <p>这里将显示根据规则书公式推演出的衍生数据。（逻辑待后续完善）</p>
+        <button onclick="calculateData()">手动刷新计算数据</button>
+    </div>
+
+    <div class="section-box hidden" id="module-05-manage" style="border-left-color: #3498db;">
+        <h2 style="color: #3498db;">[系统数据管理]</h2>
+        <p style="color: #888; font-size: 12px;">状态：系统已开启自动缓存，刷新网页数据不会丢失。</p>
+        <label style="color: #3498db; margin-top: 15px; display: block;">▶ 方式 1: 跑团纯文本导出 (发给群聊)</label>
+        <button onclick="generateText()">生成阅读版纯文本</button>
+        <label style="color: #3498db; margin-top: 15px; display: block;">▶ 方式 2: 数据防丢代码 (保存这段乱码以备不时之需)</label>
+        <button onclick="generateSaveCode()">生成存档加密代码</button>
+        <textarea id="output_area" rows="6" placeholder="导出的文本或存档代码会显示在这里..." style="margin-top: 10px;"></textarea>
+        <label style="color: #3498db; margin-top: 15px; display: block;">▶ 方式 3: 读取存档代码 (在新设备上恢复)</label>
+        <input type="text" id="import_input" placeholder="将之前生成的乱码粘贴至此...">
+        <button class="btn-red" onclick="loadSaveCode()">执行代码恢复数据</button>
+        <button class="btn-red" style="margin-top: 20px;" onclick="clearData()">[危险] 清除本地所有缓存</button>
+    </div>
+
+    <!-- [模块 06: JavaScript 逻辑控制核心] -->
+    <script>
+        // --- 核心：桌游涂卡指示灯逻辑 ---
+        function setDot(inputId, value) {
+            let currentVal = parseInt(document.getElementById(inputId).value) || 0;
+            // 点击当前最高亮的格子=清零
+            let newVal = (currentVal === value) ? 0 : value;
+            document.getElementById(inputId).value = newVal;
+            renderDots(inputId, newVal);
+            if(inputId.startsWith('h_skill_')) { checkSkillPoints(); }
+            autoSave();
+        }
+
+        function renderDots(inputId, value) {
+            let container = document.getElementById('dots_' + inputId);
+            if(!container) return;
+            let dots = container.getElementsByClassName('dot');
+            for(let i = 0; i < 5; i++) {
+                if(i < value) { dots[i].classList.add('filled'); } 
+                else { dots[i].classList.remove('filled'); }
+            }
+        }
+
+        function checkSkillPoints() {
+            let inputs = document.getElementsByClassName('human-skill-input');
+            let total = 0;
+            for(let input of inputs) { total += parseInt(input.value) || 0; }
+            let counter = document.getElementById('used_skills');
+            let counterBox = document.getElementById('skill_point_counter');
+            counter.innerText = total;
+            if(total > 15) { counterBox.classList.add('warning-text'); } 
+            else { counterBox.classList.remove('warning-text'); }
+        }
+
+        function toggleMainSections() {
+            const type = document.getElementById('char_type').value;
+            const humanBox = document.getElementById('module-02-human');
+            const anthroBox = document.getElementById('module-03-anthro');
+            const derivedBox = document.getElementById('module-04-derived');
+            const manageBox = document.getElementById('module-05-manage');
+            humanBox.classList.add('hidden'); anthroBox.classList.add('hidden');
+            derivedBox.classList.add('hidden'); manageBox.classList.add('hidden');
+            if (type === 'human') {
+                humanBox.classList.remove('hidden'); derivedBox.classList.remove('hidden'); manageBox.classList.remove('hidden');
+            } else if (type === 'anthroform') {
+                anthroBox.classList.remove('hidden'); derivedBox.classList.remove('hidden'); manageBox.classList.remove('hidden');
+            }
+        }
+
+        function autoSave() {
+            const elements = document.querySelectorAll('input, select, textarea');
+            let saveData = {};
+            elements.forEach(el => {
+                if(el.id !== 'output_area' && el.id !== 'import_input') { saveData[el.id] = el.value; }
+            });
+            localStorage.setItem('LLL_SaveData', JSON.stringify(saveData));
+        }
+
+        window.onload = function() {
+            const savedString = localStorage.getItem('LLL_SaveData');
+            if (savedString) {
+                const saveData = JSON.parse(savedString);
+                for (let id in saveData) {
+                    let el = document.getElementById(id);
+                    if (el) {
+                        el.value = saveData[id];
+                        el.dispatchEvent(new Event('change'));
+                        if(el.type === 'hidden') { renderDots(id, parseInt(saveData[id])); }
+                    }
+                }
+                toggleMainSections();
+                checkSkillPoints();
+            }
+        };
+
+        function generateText() {
+            const name = document.getElementById('char_name').value || "未命名";
+            const type = document.getElementById('char_type').value;
+            let text = `【锂之花 角色档案】\n代号：${name}\n`;
+            if (type === 'human') {
+                let originText = document.getElementById('human_origin').options[document.getElementById('human_origin').selectedIndex].text;
+                text += `类型：人类\n起源：${originText}\n`;
+                text += `体术：+${document.getElementById('h_skill_melee').value} | 闪避：+${document.getElementById('h_skill_dodge').value}\n`;
+            }
+            text += `\n(数据由终端自动导出)`;
+            document.getElementById('output_area').value = text;
+        }
+
+        function generateSaveCode() {
+            const savedString = localStorage.getItem('LLL_SaveData');
+            if (!savedString) { alert("没有可保存的数据！"); return; }
+            let charName = document.getElementById('char_name').value.trim();
+            if (charName === "") { charName = "匿名实体"; }
+            const codeData = btoa(encodeURIComponent(savedString)); 
+            document.getElementById('output_area').value = charName + "：" + codeData;
+        }
+
+        function loadSaveCode() {
+            let code = document.getElementById('import_input').value.trim();
+            if (!code) { alert("请先粘贴代码！"); return; }
+            try {
+                if (code.includes("：")) { code = code.split("：")[1]; } 
+                else if (code.includes(":")) { code = code.split(":")[1]; }
+                code = code.trim();
+                const jsonStr = decodeURIComponent(atob(code));
+                localStorage.setItem('LLL_SaveData', jsonStr);
+                alert("数据恢复成功！点击确定刷新终端。");
+                location.reload();
+            } catch (e) { alert("代码无效或已损坏，解析失败！"); }
+        }
+
+        function clearData() {
+            if(confirm("警告：这会删除浏览器中所有的本地缓存数据，确认执行吗？")) {
+                localStorage.removeItem('LLL_SaveData'); location.reload();
+            }
+        }
+        function calculateData() { alert("衍生数据计算模块尚未装载，请等待系统升级。"); }
+    </script>
+</body>
+</html>
